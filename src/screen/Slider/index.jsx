@@ -120,7 +120,7 @@ const { t, i18n } = useTranslation();
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#2CC84D',
+    backgroundColor: '#4CD04D',
   },
   container: {
     flex: 1,
@@ -164,11 +164,11 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(4),
   },
   activeDot: {
-    backgroundColor: '#2CC84D',
+    backgroundColor: '#4CD04D',
     width: scale(9),
   },
   button: {
-    backgroundColor: '#2CC84D',
+    backgroundColor: '#4CD04D',
     paddingVertical: verticalScale(14),
     borderRadius: scale(30),
     marginHorizontal: scale(30),

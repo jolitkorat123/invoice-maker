@@ -1,5 +1,3 @@
-
-// 11111111
 import React, { useState } from 'react';
 import {
   View,
@@ -136,7 +134,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(18),
   },
   continueButton: {
-    backgroundColor: '#2CC84D',
+    backgroundColor: '#4CD04D',
     paddingVertical: verticalScale(14),
     borderRadius: scale(50),
     alignItems: 'center',
@@ -164,7 +162,7 @@ const styles = StyleSheet.create({
   },
 
   doneButton: {
-    backgroundColor: '#2CC84D',
+    backgroundColor: '#4CD04D',
     paddingHorizontal: scale(14),
     paddingVertical: verticalScale(6),
     borderRadius: scale(30),

@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: scale(0),
     bottom: verticalScale(1),
-    backgroundColor: '#4CD964',
+    backgroundColor: '#4CD04D',
     borderRadius: scale(20),
     width: scale(40),
     height: scale(40),
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     height: scale(22),
     marginRight: scale(12),
     resizeMode: 'contain',
-    tintColor: '#2CC84D',
+    tintColor: '#4CD04D',
   },
   label: {
     fontSize: scale(16),
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     color: '#aaa',
   },
   button: {
-    backgroundColor: '#2CC84D',
+    backgroundColor: '#4CD04D',
     paddingVertical: verticalScale(14),
     borderRadius: scale(30),
     alignItems: 'center',
