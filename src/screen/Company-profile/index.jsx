@@ -49,7 +49,7 @@ const CompanyProfile = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
           </TouchableOpacity>
-          <Text style={styles.title}>{t('Company Profile')}</Text>
+          <Text style={styles.title}>{t('company_profile')}</Text>
         </View>
 
         {/* Card */}
@@ -58,7 +58,7 @@ const CompanyProfile = () => {
           <TouchableOpacity style={styles.row} onPress={pickLogo}>
             <View style={styles.left}>
               <Image source={require('../../../assets/company-profile/logo.png')} style={styles.iconImage} />
-              <Text style={styles.label}>{t('Logo')}</Text>
+              <Text style={styles.label}>{t('logo')}</Text>
             </View>
             <Text style={styles.arrow}>›</Text>
           </TouchableOpacity>
@@ -67,7 +67,7 @@ const CompanyProfile = () => {
           <TouchableOpacity style={styles.row}>
             <View style={styles.left}>
               <Image source={require('../../../assets/company-profile/cname.png')} style={styles.iconImage} />
-              <Text style={styles.label}>{t('Company Name')}</Text>
+              <Text style={styles.label}>{t('company_name')}</Text>
             </View>
             <Text style={styles.arrow}>›</Text>
           </TouchableOpacity>
@@ -78,7 +78,7 @@ const CompanyProfile = () => {
               <Image source={require('../../../assets/company-profile/email.png')} style={styles.iconImage} />
               <TextInput
                 style={styles.input}
-                placeholder={t('Company Email')}
+                placeholder={t('company_email')}
                 value={email}
                 onChangeText={setEmail}
                 placeholderTextColor="#aaa"
@@ -92,7 +92,7 @@ const CompanyProfile = () => {
               <Image source={require('../../../assets/company-profile/phone.png')} style={styles.iconImage} />
               <TextInput
                 style={styles.input}
-                placeholder={t('Company Phone')}
+                placeholder={t('company_phone')}
                 value={phone}
                 onChangeText={setPhone}
                 keyboardType="phone-pad"
@@ -107,7 +107,7 @@ const CompanyProfile = () => {
               <Image source={require('../../../assets/company-profile/addres.png')} style={styles.iconImage} />
               <TextInput
                 style={styles.input}
-                placeholder={t('Company Address')}
+                placeholder={t('company_address')}
                 value={address}
                 onChangeText={setAddress}
                 placeholderTextColor="#aaa"
@@ -121,7 +121,7 @@ const CompanyProfile = () => {
               <Image source={require('../../../assets/company-profile/taxno.png')} style={styles.iconImage} />
               <TextInput
                 style={styles.input}
-                placeholder={t('Tax No.')}
+                placeholder={t('tax_number')}
                 value={taxNo}
                 onChangeText={setTaxNo}
                 placeholderTextColor="#aaa"
@@ -138,7 +138,7 @@ const CompanyProfile = () => {
                 onValueChange={setTaxType}
                 style={styles.picker}
               >
-                <Picker.Item label={t('Tax Type')} value="" />
+                <Picker.Item label={t('tax_types')} value="" />
                 <Picker.Item label={t('GST')} value="gst" />
                 <Picker.Item label={t('CGST')} value="cgst" />
                 <Picker.Item label={t('SGST')} value="sgst" />
@@ -155,7 +155,7 @@ const CompanyProfile = () => {
                 onValueChange={setBusinessNature}
                 style={styles.picker}
               >
-                <Picker.Item label={t('Nature of Business')} value="" />
+                <Picker.Item label={t('nature_of_business')} value="" />
                 <Picker.Item label={t('Retail')} value="retail" />
                 <Picker.Item label={t('Wholesale')} value="wholesale" />
               </Picker>
