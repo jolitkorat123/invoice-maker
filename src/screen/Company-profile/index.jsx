@@ -14,7 +14,8 @@ import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { scale, verticalScale,moderateScale } from 'react-native-size-matters';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+
 const CompanyProfile = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -39,141 +40,142 @@ const CompanyProfile = () => {
       setLogo(result.assets[0].uri);
     }
   };
+  const handleCountinue = () => {
 
+    navigation.navigate('Invoice-m');
+  }
   return (
-    <ScrollView>
-    <LinearGradient colors={['#C5EFC5', '#EAFBEA', '#F9FFF9']} style={styles.background}>
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
+    <LinearGradient colors={['#4cd04c27', 'rgba(76, 208, 76, 0)']} style={styles.background}>
+      <ScrollView>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
+            </TouchableOpacity>
+            <Text style={styles.title}>{t('company_profile')}</Text>
+          </View>
+
+          {/* Card */}
+          <View style={styles.card}>
+            {/* Logo */}
+            <TouchableOpacity style={styles.row} onPress={pickLogo}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/logo.png')} style={styles.iconImage} />
+                <Text style={styles.label}>{t('logo')}</Text>
+              </View>
+              <Text style={styles.arrow}>›</Text>
+            </TouchableOpacity>
+
+            {/* Company Name */}
+            <TouchableOpacity style={styles.row}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/cname.png')} style={styles.iconImage} />
+                <Text style={styles.label}>{t('company_name')}</Text>
+              </View>
+              <Text style={styles.arrow}>›</Text>
+            </TouchableOpacity>
+
+            {/* Email */}
+            <View style={styles.row}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/email.png')} style={styles.iconImage} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('company_email')}
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholderTextColor="#aaa"
+                />
+              </View>
+            </View>
+
+            {/* Phone */}
+            <View style={styles.row}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/phone.png')} style={styles.iconImage} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('company_phone')}
+                  value={phone}
+                  onChangeText={setPhone}
+                  keyboardType="phone-pad"
+                  placeholderTextColor="#aaa"
+                />
+              </View>
+            </View>
+
+            {/* Address */}
+            <View style={styles.row}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/addres.png')} style={styles.iconImage} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('company_address')}
+                  value={address}
+                  onChangeText={setAddress}
+                  placeholderTextColor="#aaa"
+                />
+              </View>
+            </View>
+
+            {/* Tax No */}
+            <View style={styles.row}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/taxno.png')} style={styles.iconImage} />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t('tax_number')}
+                  value={taxNo}
+                  onChangeText={setTaxNo}
+                  placeholderTextColor="#aaa"
+                />
+              </View>
+            </View>
+
+            {/* Tax Type */}
+            <View style={styles.row}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/textype.png')} style={styles.iconImage} />
+                <Picker
+                  selectedValue={taxType}
+                  onValueChange={setTaxType}
+                  style={styles.picker}
+                >
+                  <Picker.Item label={t('tax_types')} value="" />
+                  <Picker.Item label={t('GST')} value="gst" />
+                  <Picker.Item label={t('CGST')} value="cgst" />
+                  <Picker.Item label={t('SGST')} value="sgst" />
+                </Picker>
+              </View>
+            </View>
+
+            {/* Business Nature */}
+            <View style={styles.row}>
+              <View style={styles.left}>
+                <Image source={require('../../../assets/company-profile/nature.png')} style={styles.iconImage} />
+                <Picker
+                  selectedValue={businessNature}
+                  onValueChange={setBusinessNature}
+                  style={styles.picker}
+                >
+                  <Picker.Item label={t('nature_of_business')} value="" />
+                  <Picker.Item label={t('Retail')} value="retail" />
+                  <Picker.Item label={t('Wholesale')} value="wholesale" />
+                </Picker>
+              </View>
+            </View>
+          </View>
+
+          {/* Continue Button */}
+          <TouchableOpacity style={styles.button} onPress={handleCountinue}>
+            <Text style={styles.buttonText} >{t('continue')}</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>{t('company_profile')}</Text>
         </View>
-
-        {/* Card */}
-        <View style={styles.card}>
-          {/* Logo */}
-          <TouchableOpacity style={styles.row} onPress={pickLogo}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/logo.png')} style={styles.iconImage} />
-              <Text style={styles.label}>{t('logo')}</Text>
-            </View>
-            <Text style={styles.arrow}>›</Text>
-          </TouchableOpacity>
-
-          {/* Company Name */}
-          <TouchableOpacity style={styles.row}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/cname.png')} style={styles.iconImage} />
-              <Text style={styles.label}>{t('company_name')}</Text>
-            </View>
-            <Text style={styles.arrow}>›</Text>
-          </TouchableOpacity>
-
-          {/* Email */}
-          <View style={styles.row}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/email.png')} style={styles.iconImage} />
-              <TextInput
-                style={styles.input}
-                placeholder={t('company_email')}
-                value={email}
-                onChangeText={setEmail}
-                placeholderTextColor="#aaa"
-              />
-            </View>
-          </View>
-
-          {/* Phone */}
-          <View style={styles.row}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/phone.png')} style={styles.iconImage} />
-              <TextInput
-                style={styles.input}
-                placeholder={t('company_phone')}
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad"
-                placeholderTextColor="#aaa"
-              />
-            </View>
-          </View>
-
-          {/* Address */}
-          <View style={styles.row}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/addres.png')} style={styles.iconImage} />
-              <TextInput
-                style={styles.input}
-                placeholder={t('company_address')}
-                value={address}
-                onChangeText={setAddress}
-                placeholderTextColor="#aaa"
-              />
-            </View>
-          </View>
-
-          {/* Tax No */}
-          <View style={styles.row}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/taxno.png')} style={styles.iconImage} />
-              <TextInput
-                style={styles.input}
-                placeholder={t('tax_number')}
-                value={taxNo}
-                onChangeText={setTaxNo}
-                placeholderTextColor="#aaa"
-              />
-            </View>
-          </View>
-
-          {/* Tax Type */}
-          <View style={styles.row}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/textype.png')} style={styles.iconImage} />
-              <Picker
-                selectedValue={taxType}
-                onValueChange={setTaxType}
-                style={styles.picker}
-              >
-                <Picker.Item label={t('tax_types')} value="" />
-                <Picker.Item label={t('GST')} value="gst" />
-                <Picker.Item label={t('CGST')} value="cgst" />
-                <Picker.Item label={t('SGST')} value="sgst" />
-              </Picker>
-            </View>
-          </View>
-
-          {/* Business Nature */}
-          <View style={styles.row}>
-            <View style={styles.left}>
-              <Image source={require('../../../assets/company-profile/nature.png')} style={styles.iconImage} />
-              <Picker
-                selectedValue={businessNature}
-                onValueChange={setBusinessNature}
-                style={styles.picker}
-              >
-                <Picker.Item label={t('nature_of_business')} value="" />
-                <Picker.Item label={t('Retail')} value="retail" />
-                <Picker.Item label={t('Wholesale')} value="wholesale" />
-              </Picker>
-            </View>
-          </View>
-        </View>
-
-        {/* Continue Button */}
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>{t('Continue')}</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </LinearGradient>
-    </ScrollView>
   );
 };
-
-export default CompanyProfile;
 
 const styles = StyleSheet.create({
   background: {
@@ -188,28 +190,23 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    marginBottom: verticalScale(15),
+    height: verticalScale(50),
+    marginBottom: verticalScale(10),
   },
   backButton: {
-    position: 'absolute',
-    left: scale(0),
-    bottom: verticalScale(1),
     backgroundColor: '#4CD04D',
-    borderRadius: scale(20),
-    width: scale(40),
-    height: scale(40),
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
+    paddingHorizontal: scale(10),
+    paddingVertical: verticalScale(9),
+    borderRadius: scale(100),
+    zIndex: 1,
   },
   title: {
-    fontSize: scale(22),
+    flex: 1,
+    textAlign: 'center',
+    fontSize: moderateScale(20),
     fontWeight: 'bold',
     color: '#000',
-    textAlign: 'center',
-    marginBottom: verticalScale(10),
+    marginLeft: -scale(28), // Compensates for back button width
   },
   card: {
     flex: 1,
@@ -227,7 +224,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: verticalScale(10.1),
+    paddingVertical: verticalScale(10),
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
     justifyContent: 'space-between',
@@ -246,7 +243,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: scale(16),
-    color: '#888',
+    color: '#a3a2a2ff',
   },
   input: {
     fontSize: scale(16),
@@ -281,3 +278,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default CompanyProfile;
+
+

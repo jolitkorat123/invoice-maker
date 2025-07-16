@@ -8,10 +8,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LanguageSelector from './src/screen/LanguageSelector';
 import { useTranslation ,I18nextProvider} from 'react-i18next';
-import Slider from './src/screen/Slider/index.jsx';
+import Slider from './src/screen/Slider';
 import './public/local/i18n.js';
 import CompanyProfile from './src/screen/Company-profile';
 import i18n from './public/local/i18n.js';
+import InvoiceScreen from './src/screen/Invoice-m';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ export default function App() {
             <Stack.Screen name="slider" component={Slider} />
             <Stack.Screen name="language-selector" component={LanguageSelector} />
             <Stack.Screen name="company-profile" component={CompanyProfile} />
+            <Stack.Screen name="Invoice-m" component={InvoiceScreen}/>
           </Stack.Navigator>
         </NavigationContainer>
       </View>

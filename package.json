@@ -19,7 +19,9 @@
     "expo-image-picker": "~16.1.4",
     "expo-linear-gradient": "~14.1.5",
     "expo-splash-screen": "~0.30.10",
+    "expo-sqlite": "^15.2.14",
     "expo-status-bar": "~2.2.3",
+    "formik": "^2.4.6",
     "i18next": "^23.4.6",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
@@ -32,11 +34,13 @@
     "react-native-pager-view": "^6.8.1",
     "react-native-reanimated": "~2.14.4",
     "react-native-reanimated-carousel": "^4.0.2",
+    "react-native-root-toast": "^4.0.1",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-size-matters": "^0.4.2",
     "react-native-snap-carousel": "^3.9.1",
-    "react-native-tab-view": "^4.1.2"
+    "react-native-tab-view": "^4.1.2",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-template-literals": "^7.27.1",
