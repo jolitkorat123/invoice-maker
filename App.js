@@ -13,6 +13,9 @@ import './public/local/i18n.js';
 import CompanyProfile from './src/screen/Company-profile';
 import i18n from './public/local/i18n.js';
 import InvoiceScreen from './src/screen/Invoice-m';
+import NewInvoiceScreen from './src/screen/New-invoice';
+import ClientScreen from './src/screen/Client-screen';
+import AddClientScreen from './src/screen/Add-client';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,11 +26,15 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar backgroundColor="#2CC84D" barStyle="light-content" />
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
+          <Stack.Navigator initialRouteName="Add-client" screenOptions={{ headerShown: false }}>
+          {/* <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="slider" component={Slider} />
             <Stack.Screen name="language-selector" component={LanguageSelector} />
             <Stack.Screen name="company-profile" component={CompanyProfile} />
             <Stack.Screen name="Invoice-m" component={InvoiceScreen}/>
+            <Stack.Screen name="New-invoice" component={NewInvoiceScreen}/> */}
+            {/* <Stack.Screen name="Client-Screen" component={ClientScreen}/> */}
+            <Stack.Screen name="Add-client" component={AddClientScreen}/>
           </Stack.Navigator>
         </NavigationContainer>
       </View>
