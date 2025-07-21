@@ -7,14 +7,21 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
+
+
 const ClientScreen = () => {
-  // Example click handler
+  const navigation = useNavigation();
+
   const handleClientPress = (clientName) => {
     console.log('Tapped on client:', clientName);
-    // You can navigate or show a modal here
+
+  };
+  const handleContinue = () => {
+    navigation.navigate('Add-client');
   };
 
   return (
@@ -24,17 +31,17 @@ const ClientScreen = () => {
     >
       {/* Header */}
       <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                      <Ionicons name="chevron-back" size={28} color="#000000" />
-                    </TouchableOpacity>
-                    
-               
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={28} color="#000000" />
+        </TouchableOpacity>
+
+
         <Text style={styles.headerText}>Client</Text>
         <View style={{ width: 24 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TouchableOpacity style={styles.addClientButton}>
+        <TouchableOpacity style={styles.addClientButton} onPress={handleContinue}>
           <Text style={styles.addClientText}>+  Add New Client</Text>
         </TouchableOpacity>
 
@@ -108,12 +115,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   backButton: {
-      backgroundColor: '#FFFFFF',
-      paddingHorizontal: scale(10),
-      paddingVertical: verticalScale(9),
-      borderRadius: scale(100),
-      zIndex: 1,
-    },
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: scale(10),
+    paddingVertical: verticalScale(9),
+    borderRadius: scale(100),
+    zIndex: 1,
+  },
   scrollContainer: {
     padding: 15,
   },
