@@ -302,149 +302,65 @@
 // });
 
 // export default MyBarChart;
-import React, { useState } from 'react';
-import {
-  View,
-  Dimensions,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 
 const screenWidth = Dimensions.get('window').width;
 
-// ✅ Your original data structure
-const data = {
-  labels: ['Client A', 'Client B', 'Client C', 'Client D', 'Client E',
-    'Client F', 'Client G', 'Client H', 'Client I', 'Client J'],
+const chartData = {
+  labels: [
+    'Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo',
+    'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Lima'
+  ],
   datasets: [
     {
-      data: [120, 80, 160, 80, 200, 150, 90, 110, 130, 170],
-    },
-  ],
+      data: [
+        708, 580, 306, 462, 520,
+        669, 493, 857, 925, 712, 290, 581
+      ]
+    }
+  ]
 };
 
-const barWidth = 60;
-const spaceBetweenBars = 40;
-const chartWidth = (barWidth + spaceBetweenBars) * data.labels.length;
+const chartConfig = {
+  backgroundGradientFrom: '#fff',
+  backgroundGradientTo: '#fff',
+  color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
+  labelColor: () => '#000',
+  barPercentage: 0.6,
+  decimalPlaces: 0,
+  propsForBackgroundLines: {
+    strokeDasharray: '', // solid lines
+    stroke: '#e0e0e0',
+  },
+};
 
-const MyBarChart = () => {
-  const [selectedClientIndex, setSelectedClientIndex] = useState(null);
-
-  // ✅ Create colors array based on selected index
-  const barColors = data.datasets[0].data.map((_, index) => () =>
-    selectedClientIndex === index ? 'rgba(76, 208, 77, 1)' : 'rgba(180, 180, 180, 1)'
-  );
-
-  // ✅ Clone original data and inject custom colors
-  const chartData = {
-    ...data,
-    datasets: [
-      {
-        ...data.datasets[0],
-        colors: barColors,
-      },
-    ],
-  };
-
-  const chartConfig = {
-    backgroundGradientFrom: '#ffffff',
-    backgroundGradientTo: '#ffffff',
-    decimalPlaces: 0,
-    barPercentage: 1,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    propsForBackgroundLines: {
-      stroke: '#e0e0e0',
-    },
-  };
-
-  const handleClientPress = (index) => {
-    setSelectedClientIndex(index);
-  };
-
+const CustomBarChart = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Client Report</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View>
-          <BarChart
-            data={chartData}
-            width={chartWidth}
-            height={260}
-            chartConfig={chartConfig}
-            fromZero
-            showValuesOnTopOfBars
-            withCustomBarColorFromData
-            flatColor
-            withInnerLines
-            withHorizontalLabels
-            withVerticalLabels={false}
-            style={styles.chart}
-          />
-
-          {/* Client Labels */}
-          <View style={[styles.labelsContainer, { width: chartWidth }]}>
-            {data.labels.map((client, index) => (
-              <TouchableOpacity
-                key={index}
-                style={{ width: barWidth, alignItems: 'center' }}
-                onPress={() => handleClientPress(index)}
-              >
-                <Text
-                  style={[
-                    styles.clientLabel,
-                    selectedClientIndex === index && styles.selectedLabel,
-                  ]}
-                >
-                  {client}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+    <ScrollView horizontal>
+      <BarChart
+        data={chartData}
+        width={chartData.labels.length * 60} // Width based on number of bars
+        height={300}
+        chartConfig={chartConfig}
+        showValuesOnTopOfBars={true}
+        fromZero={true}
+        style={styles.chartStyle}
+        verticalLabelRotation={0}
+        withInnerLines={true}
+        segments={5}
+      />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    marginHorizontal: 20,
-    marginTop: 30,
+  chartStyle: {
+    margin: 20,
+    borderRadius: 10,
     padding: 20,
-    borderRadius: 20,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  chart: {
-    borderRadius: 16,
-  },
-  labelsContainer: {
-    flexDirection: 'row',
-    marginTop: -20,
-  },
-  clientLabel: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
-  },
-  selectedLabel: {
-    color: '#4CD04D',
-    fontWeight: 'bold',
   },
 });
 
-export default MyBarChart;
+export default CustomBarChart;
