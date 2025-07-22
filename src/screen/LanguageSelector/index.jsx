@@ -32,7 +32,7 @@ const LanguageSelector = () => {
   const { t, i18n } = useTranslation();
 
 
-useEffect(() => {
+  useEffect(() => {
     const loadLanguage = async () => {
       try {
         const savedLang = await AsyncStorage.getItem('user-language');
@@ -46,7 +46,7 @@ useEffect(() => {
         console.error('Error loading language:', error);
       }
     };
-    
+
     loadLanguage();
   }, [isFocused]);
 
@@ -94,14 +94,40 @@ useEffect(() => {
     const isLast = index === languages.length - 1;
 
     return (
+      // <TouchableOpacity
+      //   style={[styles.languageItem, isLast && { borderBottomWidth: 0 }]}
+      //   onPress={() => selectLanguage(item.code)}
+      // >
+      //   <Image source={item.flag} style={styles.flag} />
+      //   <Text style={styles.languageText}>{item.name}</Text>
+      //   <Image
+      //     source={require('../../../assets/flags/select.png')}
+      //     style={[
+      //       styles.checkIcon,
+      //       { tintColor: isSelected ? '#00C851' : '#C4C4C4' },
+      //     ]}
+      //   />
+      // </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.languageItem, isLast && { borderBottomWidth: 0 }]}
-        onPress={() => selectLanguage(item.code)}
-      >
-        <Image source={item.flag} style={styles.flag} />
-        <Text style={styles.languageText}>{item.name}</Text>
-        <Text style={styles.checkbox}>{isSelected ? '✅' : '⬜'}</Text>
-      </TouchableOpacity>
+  style={[styles.languageItem, isLast && { borderBottomWidth: 0 }]}
+  onPress={() => selectLanguage(item.code)}
+>
+  <Image source={item.flag} style={styles.flag} />
+  <Text style={styles.languageText}>{item.name}</Text>
+
+  <Image
+    source={
+      isSelected
+        ? require('../../../assets/flags/select2.png')
+        : require('../../../assets/flags/select1.png')
+    }
+    style={[
+      styles.checkIcon,
+      isSelected ? styles.bigIcon : styles.normalIcon,
+    ]}
+  />
+</TouchableOpacity>
+
     );
   };
 
@@ -114,9 +140,6 @@ useEffect(() => {
         <Text style={styles.heading} numberOfLines={1}>
           {t('choose_language')}
         </Text>
-        <TouchableOpacity style={styles.doneButton} onPress={handleContinue}>
-          <Text style={styles.doneText}>{t('done')}</Text>
-        </TouchableOpacity>
       </View>
 
       <View style={styles.card2}>
@@ -166,6 +189,26 @@ const styles = StyleSheet.create({
     borderRadius: scale(18),
     marginRight: scale(12),
   },
+  // checkIcon: {
+  //   width: scale(22),
+  //   height: scale(22),
+  //   resizeMode: 'contain',
+  // },
+  checkIcon: {
+  resizeMode: 'contain',
+  marginLeft: 10,
+},
+
+normalIcon: {
+  width: 20,
+  height: 20,
+},
+
+bigIcon: {
+  width: 30,
+  height: 30,
+},
+
   languageText: {
     flex: 1,
     fontSize: moderateScale(16),
@@ -190,28 +233,19 @@ const styles = StyleSheet.create({
   },
   headingRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center', // center horizontally
     alignItems: 'center',
     marginBottom: verticalScale(10),
     paddingHorizontal: scale(5),
   },
   heading: {
-    fontSize: moderateScale(20),
+    fontSize: moderateScale(25),
     fontWeight: 'bold',
     color: '#000',
-    flexShrink: 1,
+    textAlign: 'center',
+
   },
-  doneButton: {
-    backgroundColor: '#4CD04D',
-    paddingHorizontal: scale(14),
-    paddingVertical: verticalScale(6),
-    borderRadius: scale(30),
-  },
-  doneText: {
-    color: '#fff',
-    fontSize: moderateScale(14),
-    fontWeight: 'bold',
-  },
+
 });
 
 export default LanguageSelector;

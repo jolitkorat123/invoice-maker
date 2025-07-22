@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { scale,verticalScale,moderateScale } from 'react-native-size-matters';
-import {} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 // Context to share selected currency across the app
@@ -28,7 +28,7 @@ const currencyList = [
 
 const CurrencySelectorScreen = () => {
   const { selectedCurrency, setSelectedCurrency } = useContext(CurrencyContext);
-
+  const navigation = useNavigation();
   return (
     <LinearGradient colors={['#DFFFD6', '#FFFFFF']} style={styles.container}>
       <SafeAreaView style={styles.inner}>
@@ -36,7 +36,7 @@ const CurrencySelectorScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add item</Text>
+        <Text style={styles.headerTitle}>Currency</Text>
       </View>
         <View style={styles.listBox}>
           <FlatList

@@ -754,7 +754,6 @@ import { useTranslation } from 'react-i18next';
 import invoice from '../../../assets/screen-13/invoice-placeholder.png';
 import estimate from '../../../assets/screen-13/bill.png';
 import client from '../../../assets/screen-13/Mask-group.png';
-import report from '../../../assets/screen-13/invoice-placeholder.png';
 import item from '../../../assets/screen-13/box.png';
 
 const InvoiceScreen = () => {
@@ -773,17 +772,34 @@ const InvoiceScreen = () => {
 
   const invoices = [];
 
-  const handleContinue1 = () => navigation.navigate('New-invoice');
+  const RedirectNewInvoiceScreen = () => navigation.navigate('New-invoice');
   const handleContinue2 = () => navigation.navigate('New-invoice');
-  const handleContinue3 = () => navigation.navigate('Client-Screen');
-  const handleContinue5 = () => navigation.navigate('Add-item');
+  const RedirectClientScreen = () => navigation.navigate('Client-Screen');
+  const RedirectAdditemScreen = () => navigation.navigate('Add-item');
+
+  const getHeaderTitle = () => {
+    switch (selectedTab) {
+      case 'invoice':
+        return t('invoice');
+      case 'estimate':
+        return t('estimate');
+      case 'client':
+        return t('client');
+      case 'report':
+        return t('report');
+      case 'item':
+        return t('item');
+      default:
+        return t('invoice_maker');
+    }
+  };
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.greenHeader}>
         <View style={styles.headerTop}>
-          <Text style={styles.headerTitle}>{t('invoice_maker')}</Text>
+          <Text style={styles.headerTitle}>{getHeaderTitle()}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Settings-screen')}>
             <Ionicons name="settings-sharp" size={24} color="white" />
           </TouchableOpacity>
@@ -791,20 +807,22 @@ const InvoiceScreen = () => {
       </View>
 
       {/* Stats */}
-      <View style={styles.statContainer}>
-        <View style={styles.statBox}>
-          <Text style={styles.statLabel}>{t('total_sales')}</Text>
-          <Text style={styles.statValueGreen}>₹56,050.00</Text>
+      {(selectedTab === 'invoice' || selectedTab === 'report') && (
+        <View style={styles.statContainer}>
+          <View style={styles.statBox}>
+            <Text style={styles.statLabel}>{t('total_sales')}</Text>
+            <Text style={styles.statValueGreen}>₹56,050.00</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statLabel}>{t('total_received')}</Text>
+            <Text style={styles.statValueRed}>₹0.00</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statLabel}>{t('total_overdue')}</Text>
+            <Text style={styles.statValueBlack}>₹0.00</Text>
+          </View>
         </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statLabel}>{t('total_received')}</Text>
-          <Text style={styles.statValueRed}>₹0.00</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statLabel}>{t('total_overdue')}</Text>
-          <Text style={styles.statValueBlack}>₹0.00</Text>
-        </View>
-      </View>
+      )}
 
       {/* Tabs */}
       {(selectedTab === 'invoice' || selectedTab === 'estimate' || selectedTab === 'report') && (
@@ -845,7 +863,7 @@ const InvoiceScreen = () => {
               <Text style={styles.noInvoiceText}>
                 {t('no_invoice_message') + '\n' + t('create_invoice_prompt')}
               </Text>
-              <TouchableOpacity style={styles.createBtn} onPress={handleContinue1}>
+              <TouchableOpacity style={styles.createBtn} onPress={RedirectNewInvoiceScreen}>
                 <Ionicons name="add" size={20} color="#fff" />
                 <Text style={styles.createBtnText}>{t('create_new_invoice')}</Text>
               </TouchableOpacity>
@@ -875,7 +893,7 @@ const InvoiceScreen = () => {
           <Text style={styles.noInvoiceText}>
             {t('client_message') + '\n' + t('create_client_prompt')}
           </Text>
-          <TouchableOpacity style={styles.createBtn} onPress={handleContinue3}>
+          <TouchableOpacity style={styles.createBtn} onPress={RedirectClientScreen}>
             <Ionicons name="add" size={20} color="#fff" />
             <Text style={styles.createBtnText}>{t('add_new_client')}</Text>
           </TouchableOpacity>
@@ -952,7 +970,7 @@ const InvoiceScreen = () => {
           <Text style={styles.noInvoiceText}>
             {t('item_message') + '\n' + t('create_item_prompt')}
           </Text>
-          <TouchableOpacity style={styles.createBtn} onPress={handleContinue5}>
+          <TouchableOpacity style={styles.createBtn} onPress={RedirectAdditemScreen}>
             <Ionicons name="add" size={20} color="#fff" />
             <Text style={styles.createBtnText}>{t('add_item')}</Text>
           </TouchableOpacity>
@@ -1007,14 +1025,14 @@ const InvoiceScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7FCF8' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#F7FCF8'
+   },
   greenHeader: {
     backgroundColor: '#4CAF50',
-    // borderBottomLeftRadius: 20,
-    // borderBottomRightRadius: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     paddingHorizontal: 16,
     paddingBottom: 40,
   },
@@ -1024,7 +1042,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  headerTitle: { color: '#fff', fontSize: 20, fontWeight: 'bold' },
+  headerTitle: { 
+    color: '#fff',
+     fontSize: 25, 
+     fontWeight: 'bold'
+     },
   statContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1142,86 +1164,37 @@ const styles = StyleSheet.create({
     color: '#D9D9D9',
     fontWeight: '500',
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    margin: 10,
-    elevation: 2,
-  },
-  rowBetween: {
+  reportControls: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
+    marginHorizontal: 16,
+    marginBottom: 20,
+  },
+  dropdownBox: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    elevation: 3,
+    width: '48%',
   },
-  invoiceId: {
-    fontWeight: 'bold',
+  dropdownText: {
     fontSize: 14,
-    color: '#111',
-  },
-  clientName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-  },
-  date: {
-    marginTop: 4,
-    fontSize: 12,
-    color: '#888',
-  },
-  message: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-    marginBottom: 10,
-  },
-  amount: {
-    fontSize: 16,
-    fontWeight: 'bold',
     color: '#000',
   },
-  statusBadge: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 16,
+  reportPlaceholderBox: {
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    marginHorizontal: 30,
+    height: 350,
+    width: 325,
+    alignSelf: 'center',
+    elevation: 3,
   },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  reportControls: {
-  flexDirection: 'row',
-  justifyContent: 'space-evenly',
-  marginHorizontal: 16,
-  marginBottom: 20,
-},
-dropdownBox: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  backgroundColor: '#fff',
-  borderRadius: 10,
-  paddingHorizontal: 16,
-  paddingVertical: 12,
-  elevation: 3,
-  width: '48%',
-},
-dropdownText: {
-  fontSize: 14,
-  color: '#000',
-},
-reportPlaceholderBox: {
-  backgroundColor: '#fff',
-  borderRadius: 30,
-  marginHorizontal: 30,
-  height: 350,
-  width: 325,
-  alignSelf: 'center',
-  elevation: 3,
-},
-
-
-
 });
 
 export default InvoiceScreen;
+

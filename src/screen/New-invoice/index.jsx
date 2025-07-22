@@ -487,7 +487,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { scale, verticalScale } from 'react-native-size-matters';
- 
 
 const SectionItem = ({ icon, label, onPress, isVisible }) => (
   <TouchableOpacity style={styles.sectionRow} onPress={onPress}>
@@ -508,17 +507,11 @@ export default function NewInvoiceScreen() {
   const startDate = route.params?.startDate ? new Date(route.params.startDate) : new Date('2025-05-16');
   const endDate = route.params?.endDate ? new Date(route.params.endDate) : new Date('2025-05-23');
 
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const renderText = (text) => (isVisible ? text : '***');
 
   const formatDate = (date) => date.toLocaleDateString('en-GB');
-
-  const handleContinue = () => {
-    navigation.navigate('Invoice-info-screen');
-  };
 
   return (
     <LinearGradient colors={['#4cd04c27', 'rgba(76, 208, 76, 0)']} style={styles.background}>
@@ -540,7 +533,7 @@ export default function NewInvoiceScreen() {
         {/* Invoice Info Card */}
         <TouchableOpacity
           style={styles.invoiceInfoCard}
-          onPress={handleContinue}
+          onPress={() => navigation.navigate('Invoice-info-screen')}
         >
           <View>
             <Text style={styles.invoiceInfoTitle}>{renderText('Invoice Info')}</Text>
@@ -550,9 +543,9 @@ export default function NewInvoiceScreen() {
           <Text style={styles.invoiceNumber}>{renderText(invoiceNo)}</Text>
         </TouchableOpacity>
 
-        {/* Other Sections */}
+        {/* Business & Client */}
         <View style={styles.sectionCard}>
-          <TouchableOpacity style={styles.sectionRow}>
+          <TouchableOpacity style={styles.sectionRow} onPress={() => navigation.navigate('BusinessInfoScreen')}>
             <View style={styles.iconLabel}>
               <Image source={require('../../../assets/screen-14/briefcase.png')} style={styles.icon} />
               <Text style={styles.label}>{renderText('Business Info')}</Text>
@@ -562,7 +555,7 @@ export default function NewInvoiceScreen() {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.sectionRow}>
+          <TouchableOpacity style={styles.sectionRow} onPress={() => navigation.navigate('Add-client')}>
             <View style={styles.iconLabel}>
               <Image source={require('../../../assets/screen-14/Mask group.png')} style={styles.icon} />
               <Text style={styles.label}>{renderText('Client')}</Text>
@@ -573,8 +566,9 @@ export default function NewInvoiceScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Items Section */}
         <View style={styles.sectionCard}>
-          <TouchableOpacity style={styles.sectionRow}>
+          <TouchableOpacity style={styles.sectionRow} onPress={() => navigation.navigate('Add-item')}>
             <View style={styles.iconLabel}>
               <Image source={require('../../../assets/screen-14/i.png')} style={styles.icon} />
               <Text style={styles.label}>{renderText('Items')}</Text>
@@ -584,17 +578,18 @@ export default function NewInvoiceScreen() {
             </View>
           </TouchableOpacity>
 
-          <SectionItem icon={require('../../../assets/screen-14/hand.png')} label="Quantity" isVisible={isVisible} />
-          <SectionItem icon={require('../../../assets/screen-14/price-tag.png')} label="Price" isVisible={isVisible} />
-          <SectionItem icon={require('../../../assets/screen-14/discount.png')} label="Discount" isVisible={isVisible} />
-          <SectionItem icon={require('../../../assets/screen-14/delivery.png')} label="Shipping Charges" isVisible={isVisible} />
-          <SectionItem icon={require('../../../assets/screen-14/money.png')} label="Currency" isVisible={isVisible} />
-          <SectionItem icon={require('../../../assets/screen-14/debit-card.png')} label="Payment Method" isVisible={isVisible} />
+          <SectionItem icon={require('../../../assets/screen-14/hand.png')} label="Quantity" isVisible={isVisible} onPress={() => navigation.navigate('QuantityScreen')} />
+          <SectionItem icon={require('../../../assets/screen-14/price-tag.png')} label="Price" isVisible={isVisible} onPress={() => navigation.navigate('PriceScreen')} />
+          <SectionItem icon={require('../../../assets/screen-14/discount.png')} label="Discount" isVisible={isVisible} onPress={() => navigation.navigate('DiscountScreen')} />
+          <SectionItem icon={require('../../../assets/screen-14/delivery.png')} label="Shipping Charges" isVisible={isVisible} onPress={() => navigation.navigate('ShippingScreen')} />
+          <SectionItem icon={require('../../../assets/screen-14/money.png')} label="Currency" isVisible={isVisible} onPress={() => navigation.navigate('Currency-screen')} />
+          <SectionItem icon={require('../../../assets/screen-14/debit-card.png')} label="Payment Method" isVisible={isVisible} onPress={() => navigation.navigate('PaymentMethodScreen')} />
         </View>
 
+        {/* Terms & Signature */}
         <View style={styles.sectionCard}>
-          <SectionItem icon={require('../../../assets/screen-14/terms-and-conditions.png')} label="Terms & Condition" isVisible={isVisible} />
-          <SectionItem icon={require('../../../assets/screen-14/signature.png')} label="Signature" isVisible={isVisible} />
+          <SectionItem icon={require('../../../assets/screen-14/terms-and-conditions.png')} label="Terms & Condition" isVisible={isVisible} onPress={() => navigation.navigate('TermsScreen')} />
+          <SectionItem icon={require('../../../assets/screen-14/signature.png')} label="Signature" isVisible={isVisible} onPress={() => navigation.navigate('Signature-screen')} />
         </View>
       </ScrollView>
     </LinearGradient>
@@ -602,13 +597,8 @@ export default function NewInvoiceScreen() {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-  container: {
-    padding: 20,
-    paddingBottom: 40,
-  },
+  background: { flex: 1 },
+  container: { padding: 20, paddingBottom: 40 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -620,12 +610,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(10),
     paddingVertical: verticalScale(9),
     borderRadius: scale(100),
-    zIndex: 1,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+  title: { fontSize: 20, fontWeight: 'bold' },
   invoiceInfoCard: {
     backgroundColor: 'white',
     borderRadius: 12,
@@ -635,18 +621,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 2,
   },
-  invoiceInfoTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  invoiceInfoDate: {
-    fontSize: 12,
-    color: '#555',
-  },
-  invoiceNumber: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+  invoiceInfoTitle: { fontWeight: 'bold', fontSize: 16 },
+  invoiceInfoDate: { fontSize: 12, color: '#555' },
+  invoiceNumber: { fontWeight: 'bold', fontSize: 16 },
   sectionCard: {
     backgroundColor: '#fcfcfcff',
     borderRadius: 12,
@@ -661,19 +638,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: '#ccc',
   },
-  iconLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  icon: {
-    width: 20,
-    height: 20,
-    marginRight: 12,
-    resizeMode: 'contain',
-  },
-  label: {
-    fontSize: 14,
-  },
+  iconLabel: { flexDirection: 'row', alignItems: 'center' },
+  icon: { width: 20, height: 20, marginRight: 12, resizeMode: 'contain' },
+  label: { fontSize: 14 },
   addButton: {
     backgroundColor: '#000000ff',
     width: 24,
@@ -683,3 +650,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+

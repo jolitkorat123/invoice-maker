@@ -8,6 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import SignatureScreen from 'react-native-signature-canvas';
+import * as ImagePicker from 'expo-image-picker';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,15 +30,16 @@ const SignatureScreenComponent = () => {
     setSignature(null);
   };
 
-  const handleGalleryPick = () => {
-    launchImageLibrary(
-      { mediaType: 'photo', quality: 1 },
-      response => {
-        if (response.assets && response.assets.length > 0) {
-          setImageUri(response.assets[0].uri);
+  const handleGalleryPick =async () => {
+     const result = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          quality: 1,
+          selectionLimit: 1,
+        });
+    
+        if (!result.canceled) {
+          setLogo(result.assets[0].uri);
         }
-      }
-    );
   };
 
   return (
@@ -48,7 +50,7 @@ const SignatureScreenComponent = () => {
           <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Signature</Text>
-        <TouchableOpacity onPress={handleGalleryPick}>
+        <TouchableOpacity onPress={()=>handleGalleryPick()}>
           <Image
             source={require('../../../assets/screen-25/gallery.png')}
             style={styles.galleryIcon}
