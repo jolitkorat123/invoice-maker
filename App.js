@@ -35,8 +35,8 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar backgroundColor="#2CC84D" barStyle="light-content" />
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="lineChart" screenOptions={{ headerShown: false }}>
-          {/* <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
+          {/* <Stack.Navigator initialRouteName="lineChart" screenOptions={{ headerShown: false }}> */}
+          <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="slider" component={Slider} />
             <Stack.Screen name="language-selector" component={LanguageSelector} />
             <Stack.Screen name="company-profile" component={CompanyProfile} />
@@ -50,7 +50,8 @@ export default function App() {
             <Stack.Screen name="Numberformat-screen" component={NumberFormatScreen}/>
             <Stack.Screen name="Dateformat-screen" component={DateFormatScreen}/>
             <Stack.Screen name="Currency-screen" component={CurrencySelectorScreen}/>
-            <Stack.Screen name="Signature-screen" component={SignatureScreenComponent}/> */}
+            <Stack.Screen name="Signature-screen" component={SignatureScreenComponent}/>
+            <Stack.Screen name="barChart" component={BarChart}/>
             <Stack.Screen name="lineChart" component={LineChart}/>
           </Stack.Navigator>
         </NavigationContainer>

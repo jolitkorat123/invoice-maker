@@ -755,6 +755,8 @@ import invoice from '../../../assets/screen-13/invoice-placeholder.png';
 import estimate from '../../../assets/screen-13/bill.png';
 import client from '../../../assets/screen-13/Mask-group.png';
 import item from '../../../assets/screen-13/box.png';
+import CustomBarChart from '../Chart/barChart';
+import Line from '../Chart/lineChart';
 
 const InvoiceScreen = () => {
   const navigation = useNavigation();
@@ -901,7 +903,7 @@ const InvoiceScreen = () => {
       )}
 
       {selectedTab === 'report' && (
-        <View style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }}>
           {/* Date & Frequency Select */}
           <View style={styles.reportControls}>
             <TouchableOpacity style={styles.dropdownBox} onPress={() => setShowDatePicker(true)}>
@@ -916,7 +918,12 @@ const InvoiceScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.reportPlaceholderBox} />
+          <View style={styles.reportPlaceholderBox} >
+            <CustomBarChart/>
+          </View>
+          <View style={styles.reportPlaceholderBox} >
+            <Line/>
+          </View>
 
           {/* Date Picker Dialog */}
           {showDatePicker && (
@@ -961,7 +968,7 @@ const InvoiceScreen = () => {
               </View>
             </TouchableOpacity>
           </Modal>
-        </View>
+        </ScrollView>
       )}
 
       {selectedTab === 'item' && (
@@ -1188,11 +1195,13 @@ const styles = StyleSheet.create({
   reportPlaceholderBox: {
     backgroundColor: '#fff',
     borderRadius: 30,
+    marginVertical: 10,
     marginHorizontal: 30,
     height: 350,
     width: 325,
     alignSelf: 'center',
     elevation: 3,
+    overflow: 'hidden',
   },
 });
 
