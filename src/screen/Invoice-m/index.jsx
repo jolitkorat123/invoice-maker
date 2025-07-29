@@ -508,7 +508,7 @@
 //           ))}
 //         </View>
 //       )}
-      
+
 
 //       {/* Tab Content */}
 //       {selectedTab === 'invoice' && (
@@ -734,6 +734,8 @@
 //     </View>
 //   );
 // };
+
+//Wrking 25-07
 import React, { useState } from 'react';
 import {
   View,
@@ -772,9 +774,123 @@ const InvoiceScreen = () => {
   const [showFrequencyModal, setShowFrequencyModal] = useState(false);
   const frequencyOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
-  const invoices = [];
+  // const invoices = [];
+  const invoices = [
+    {
+      id: 'INV00001',
+      clientName: 'Divyesh Shah',
+      amount: 56050,
+      status: 'Unpaid',
+      dueDate: '17/05/2025',
+      message: t('unpaid'),
+    },
+    {
+      id: 'INV00002',
+      clientName: 'Shivangi Rathi',
+      amount: 8000,
+      status: 'Paid',
+      dueDate: '17/05/2025',
+      message: t('paid'),
+    },
+    {
+      id: 'INV00003',
+      clientName: 'Karan Patel',
+      amount: 12000,
+      status: 'Unpaid',
+      dueDate: '20/06/2025',
+      message: t('unpaid'),
+    },
+    {
+      id: 'INV00004',
+      clientName: 'Nirali Mehta',
+      amount: 24500,
+      status: 'Paid',
+      dueDate: '15/06/2025',
+      message: t('paid'),
+    },
+    {
+      id: 'INV00005',
+      clientName: 'Rahul Verma',
+      amount: 9750,
+      status: 'Unpaid',
+      dueDate: '30/07/2025',
+      message: t('unpaid'),
+    },
+    {
+      id: 'INV00006',
+      clientName: 'Sneha Joshi',
+      amount: 18000,
+      status: 'Paid',
+      dueDate: '10/07/2025',
+      message: t('paid'),
+    },
+    {
+      id: 'INV00007',
+      clientName: 'Ajay Sharma',
+      amount: 15200,
+      status: 'Unpaid',
+      dueDate: '05/08/2025',
+      message: t('unpaid'),
+    },
+    {
+      id: 'INV00008',
+      clientName: 'Pooja Nair',
+      amount: 43000,
+      status: 'Paid',
+      dueDate: '12/06/2025',
+      message: t('paid'),
+    },
+    {
+      id: 'INV00009',
+      clientName: 'Yash Desai',
+      amount: 29800,
+      status: 'Unpaid',
+      dueDate: '28/07/2025',
+      message: t('unpaid'),
+    },
+    {
+      id: 'INV00010',
+      clientName: 'Meena Agarwal',
+      amount: 35000,
+      status: 'Paid',
+      dueDate: '22/05/2025',
+      message: t('paid'),
+    },
+    {
+      id: 'INV00011',
+      clientName: 'Meena Agarwal',
+      amount: 35000,
+      status: 'Paid',
+      dueDate: '22/05/2025',
+      message: t('paid'),
+    },
+    {
+      id: 'INV00012',
+      clientName: 'Meena Agarwal',
+      amount: 35000,
+      status: 'Paid',
+      dueDate: '22/05/2025',
+      message: t('paid'),
+    },
+    {
+      id: 'INV00013',
+      clientName: 'Meena Agarwal',
+      amount: 35000,
+      status: 'Paid',
+      dueDate: '22/05/2025',
+      message: t('paid'),
+    },
+  ];
 
-  const RedirectNewInvoiceScreen = () => navigation.navigate('New-invoice');
+  const totalSales = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+  const totalReceived = invoices
+    .filter(invoice => invoice.status === 'Paid')
+    .reduce((sum, invoice) => sum + invoice.amount, 0);
+  const RedirectNewInvoiceScreen = () => navigation.navigate('New-invoice', {
+      
+        invoiceId: `INV${String(invoices.length + 1).padStart(5, '0')}`
+      
+    })
   const handleContinue2 = () => navigation.navigate('New-invoice');
   const RedirectClientScreen = () => navigation.navigate('Client-Screen');
   const RedirectAdditemScreen = () => navigation.navigate('Add-item');
@@ -807,17 +923,17 @@ const InvoiceScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-
+      
       {/* Stats */}
       {(selectedTab === 'invoice' || selectedTab === 'report') && (
         <View style={styles.statContainer}>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('total_sales')}</Text>
-            <Text style={styles.statValueGreen}>₹56,050.00</Text>
+            <Text style={styles.statValueGreen}>₹{totalSales.toLocaleString()}</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('total_received')}</Text>
-            <Text style={styles.statValueRed}>₹0.00</Text>
+            <Text style={styles.statValueRed}>₹{totalReceived.toLocaleString()}</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('total_overdue')}</Text>
@@ -832,8 +948,8 @@ const InvoiceScreen = () => {
           {(selectedTab === 'invoice'
             ? ['All', 'Paid', 'Unpaid']
             : selectedTab === 'estimate'
-            ? ['All', 'Pending', 'Approved', 'Overdue', 'Cancel']
-            : ['Sales', 'Received', 'Receivable']
+              ? ['All', 'Pending', 'Approved', 'Overdue', 'Cancel']
+              : ['Sales', 'Received', 'Receivable']
           ).map(tab => (
             <TouchableOpacity
               key={tab}
@@ -850,28 +966,62 @@ const InvoiceScreen = () => {
 
       {/* Tab Content */}
       {selectedTab === 'invoice' && (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          {invoices.filter(item => activeTab === 'All' || item.status === activeTab).length > 0 ? (
-            invoices
-              .filter(item => activeTab === 'All' || item.status === activeTab)
-              .map((item, index) => (
-                <View key={index} style={styles.card}>
-                  {/* Card content here */}
-                </View>
-              ))
-          ) : (
-            <View style={styles.content}>
-              <Image source={invoice} style={styles.placeholderIcon} />
-              <Text style={styles.noInvoiceText}>
-                {t('no_invoice_message') + '\n' + t('create_invoice_prompt')}
-              </Text>
-              <TouchableOpacity style={styles.createBtn} onPress={RedirectNewInvoiceScreen}>
-                <Ionicons name="add" size={20} color="#fff" />
-                <Text style={styles.createBtnText}>{t('create_new_invoice')}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            {invoices.filter(item => activeTab === 'All' || item.status === activeTab).length > 0 ? (
+              invoices
+                .filter(item => activeTab === 'All' || item.status === activeTab)
+                .map((item, index) => (
+                  <View key={index} style={styles.card}>
+                    <View style={styles.rowBetween}>
+                      <Text style={styles.invoiceId}>{item.id}</Text>
+                      <Text style={styles.clientName}>{item.clientName}</Text>
+                    </View>
+                    <View style={styles.rowBetween}>
+                      <Text style={styles.date}>{item.dueDate}</Text>
+                      <Text style={styles.amount}>₹{item.amount.toLocaleString()}</Text>
+                    </View>
+                    <View style={styles.rowBetween}>
+                      <Text style={styles.message}>{item.message}</Text>
+                      <View
+                        style={[
+                          styles.statusBadge,
+                          {
+                            backgroundColor:
+                              item.status === 'Paid' ? '#E0F5E9' : '#FFEAEA',
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.statusText,
+                            {
+                              color: item.status === 'Paid' ? '#4CAF50' : '#FF3B30',
+                            },
+                          ]}
+                        >
+                          {t(item.status.toLowerCase())}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                ))
+            ) : (
+              <View style={styles.content}>
+                <Image source={invoice} style={styles.placeholderIcon} />
+                <Text style={styles.noInvoiceText}>
+                  {t('no_invoice_message') + '\n' + t('create_invoice_prompt')}
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+          <View style={styles.bottomTab}>
+            <TouchableOpacity style={styles.createBtn} onPress={RedirectNewInvoiceScreen}>
+              <Ionicons name="add" size={20} color="#fff" />
+              <Text style={styles.createBtnText}>{t('create_new_invoice')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       )}
 
       {selectedTab === 'estimate' && (
@@ -919,10 +1069,10 @@ const InvoiceScreen = () => {
           </View>
 
           <View style={styles.reportPlaceholderBox} >
-            <CustomBarChart/>
+            <CustomBarChart />
           </View>
           <View style={styles.reportPlaceholderBox} >
-            <Line/>
+            <Line />
           </View>
 
           {/* Date Picker Dialog */}
@@ -1033,10 +1183,10 @@ const InvoiceScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
+  container: {
+    flex: 1,
     backgroundColor: '#F7FCF8'
-   },
+  },
   greenHeader: {
     backgroundColor: '#4CAF50',
     paddingTop: 20,
@@ -1049,11 +1199,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  headerTitle: { 
+  headerTitle: {
     color: '#fff',
-     fontSize: 25, 
-     fontWeight: 'bold'
-     },
+    fontSize: 25,
+    fontWeight: 'bold'
+  },
   statContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1067,6 +1217,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 4,
     overflow: 'hidden',
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   statLabel: {
     backgroundColor: '#000',
@@ -1109,11 +1264,45 @@ const styles = StyleSheet.create({
   activeTab: { backgroundColor: '#4CAF50' },
   tabText: { color: '#555', fontWeight: '600' },
   activeTabText: { color: '#fff', fontWeight: '600' },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 17,
+    padding: 16,
+    margin: 10,
+    elevation: 2,
+  },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
+  },
+  date: {
+    marginTop: 4,
+    fontSize: 14,
+    color: '#888',
+  },
+  message: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 15,
+
+  },
+  amount: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+  },
+  statusBadge: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginTop: 15,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   placeholderIcon: {
     width: 120,
@@ -1127,6 +1316,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 24,
   },
+  bottomTab: {
+    marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   createBtn: {
     backgroundColor: '#4CAF50',
     flexDirection: 'row',
@@ -1134,6 +1328,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 24,
+    // position: 'sticky',
+    // bottom: 20,
   },
   createBtnText: {
     color: '#fff',
@@ -1166,6 +1362,12 @@ const styles = StyleSheet.create({
     padding: 10,
     width: 70,
   },
+  invoiceId: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#111',
+    marginBottom: 12,
+  },
   navLabel: {
     fontSize: 12,
     color: '#D9D9D9',
@@ -1188,6 +1390,12 @@ const styles = StyleSheet.create({
     elevation: 3,
     width: '48%',
   },
+  clientName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
   dropdownText: {
     fontSize: 14,
     color: '#000',
@@ -1206,3 +1414,4 @@ const styles = StyleSheet.create({
 });
 
 export default InvoiceScreen;
+
