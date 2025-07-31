@@ -4,19 +4,19 @@
 // // Create company table if it doesn't exist
 // export const createCompanyTable = () => {
 //   db.transaction(tx => {
-//     tx.executeSql(
-//       `CREATE TABLE IF NOT EXISTS company (
-//         id INTEGER PRIMARY KEY AUTOINCREMENT,
-//         companyName TEXT,
-//         email TEXT,
-//         phone TEXT,
-//         address TEXT,
-//         taxNo TEXT,
-//         taxType TEXT,
-//         businessNature TEXT,
-//         logo TEXT
-//       );`
-//     );
+    // tx.executeSql(
+      // `CREATE TABLE IF NOT EXISTS company (
+      //   id INTEGER PRIMARY KEY AUTOINCREMENT,
+      //   companyName TEXT,
+      //   email TEXT,
+      //   phone TEXT,
+      //   address TEXT,
+      //   taxNo TEXT,
+      //   taxType TEXT,
+      //   businessNature TEXT,
+      //   logo TEXT
+      // );`
+    // );
 //   });
 // };
 
@@ -24,18 +24,18 @@
 // export const insertCompany = (data, onSuccess, onError) => {
 //   db.transaction(tx => {
 //     tx.executeSql(
-//       `INSERT INTO company (companyName, email, phone, address, taxNo, taxType, businessNature, logo)
-//        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-//       [
-//         data.companyName,
-//         data.email,
-//         data.phone,
-//         data.address,
-//         data.taxNo,
-//         data.taxType,
-//         data.businessNature,
-//         data.logo,
-//       ],
+      // `INSERT INTO company (companyName, email, phone, address, taxNo, taxType, businessNature, logo)
+      //  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      // [
+      //   data.companyName,
+      //   data.email,
+      //   data.phone,
+      //   data.address,
+      //   data.taxNo,
+      //   data.taxType,
+      //   data.businessNature,
+      //   data.logo,
+      // ],
 //       (_, result) => onSuccess && onSuccess(result),
 //       (_, error) => {
 //         onError && onError(error);
@@ -59,6 +59,8 @@
 //     );
 //   });
 // };
+
+
 // company.js
 import db from './../db';
 

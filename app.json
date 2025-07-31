@@ -13,6 +13,9 @@
       "resizeMode": "cover",
       "backgroundColor": "#ff0000"
     },
+    "android": {
+      "package": "com.yourcompany.invoicemaker"
+    },
     "ios": {
       "supportsTablet": true
     },
