@@ -26,6 +26,8 @@ import SignatureScreenComponent from './src/screen/Signature-screen';
 import LineChart from './src/screen/Chart/lineChart/index.jsx';
 import BarChart from './src/screen/Chart/barChart/index.jsx';
 
+
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
