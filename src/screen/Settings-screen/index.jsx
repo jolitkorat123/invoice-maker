@@ -190,7 +190,7 @@ const settingsData = [
     label: 'Templates',
     icon: require('E:/react native/invoice-maker/assets/screen-24/templates.png'),
     navigateTo: 'Templates',
-    value: '7 Days',
+    value: ' ',
   },
   {
     label: 'Default Currency',
