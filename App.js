@@ -14,6 +14,7 @@ import CompanyProfile from './src/screen/Company-profile';
 import i18n from './public/local/i18n.js';
 import InvoiceScreen from './src/screen/Invoice-m';
 import NewInvoiceScreen from './src/screen/New-invoice';
+import NewEstimateScreen from './src/screen/Estimate-screen'
 import ClientScreen from './src/screen/Client-screen';
 import AddClientScreen from './src/screen/Add-client';
 import AddItemScreen from './src/screen/Add-item';
@@ -25,6 +26,10 @@ import CurrencySelectorScreen from './src/screen/Currency-screen';
 import SignatureScreenComponent from './src/screen/Signature-screen';
 import LineChart from './src/screen/Chart/lineChart/index.jsx';
 import BarChart from './src/screen/Chart/barChart/index.jsx';
+import TemplateSelectorScreen from './src/screen/TemplateSelectorScreen';
+import Template1 from './src/screen/Templates/Template1';
+import Template2 from './src/screen/Templates/Template2';
+import Template3 from './src/screen/Templates/Template3';
 
 
 
@@ -37,13 +42,14 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar backgroundColor="#2CC84D" barStyle="light-content" />
         <NavigationContainer>
-          {/* <Stack.Navigator initialRouteName="lineChart" screenOptions={{ headerShown: false }}> */}
+          {/* <Stack.Navigator initialRouteName="TemplateSelector" screenOptions={{ headerShown: false }}> */}
           <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="slider" component={Slider} />
             <Stack.Screen name="language-selector" component={LanguageSelector} />
             <Stack.Screen name="company-profile" component={CompanyProfile} />
             <Stack.Screen name="Invoice-m" component={InvoiceScreen}/>
             <Stack.Screen name="New-invoice" component={NewInvoiceScreen}/>
+            <Stack.Screen name="Estimate-screen" component={NewEstimateScreen}/>
             <Stack.Screen name="Client-Screen" component={ClientScreen}/>
             <Stack.Screen name="Add-client" component={AddClientScreen}/>
             <Stack.Screen name="Add-item" component={AddItemScreen}/>
@@ -55,6 +61,10 @@ export default function App() {
             <Stack.Screen name="Signature-screen" component={SignatureScreenComponent}/>
             <Stack.Screen name="barChart" component={BarChart}/>
             <Stack.Screen name="lineChart" component={LineChart}/>
+            <Stack.Screen name="TemplateSelector" component={TemplateSelectorScreen} />
+            <Stack.Screen name="Template1" component={Template1} />
+            <Stack.Screen name="Template2" component={Template2} />
+            <Stack.Screen name="Template3" component={Template3} />
           </Stack.Navigator>
         </NavigationContainer>
       </View>

@@ -178,6 +178,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+
 import { Ionicons } from '@expo/vector-icons';
 
 const settingsData = [

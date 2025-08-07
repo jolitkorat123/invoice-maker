@@ -752,11 +752,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
-
 import invoice from '../../../assets/screen-13/invoice-placeholder.png';
 import estimate from '../../../assets/screen-13/bill.png';
 import client from '../../../assets/screen-13/Mask-group.png';
 import item from '../../../assets/screen-13/box.png';
+import { Calendar } from 'react-native-calendars';
 import CustomBarChart from '../Chart/barChart';
 import Line from '../Chart/lineChart';
 
@@ -773,7 +773,43 @@ const InvoiceScreen = () => {
   const [frequency, setFrequency] = useState('Monthly');
   const [showFrequencyModal, setShowFrequencyModal] = useState(false);
   const frequencyOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
-
+  const CustomDatePicker = ({ visible, date, onSelect, onClose }) => (
+  <Modal visible={visible} transparent animationType="fade">
+    <View style={styles.modalOverlay}>
+      <View style={styles.datePickerContainer}>
+        <View style={styles.datePickerHeader}>
+          <Text style={styles.datePickerHeaderText}>Select Date</Text>
+          <TouchableOpacity onPress={onClose}>
+            <Ionicons name="close" size={24} color="#333" />
+          </TouchableOpacity>
+        </View>
+        <Calendar
+          style={styles.calendarStyle}
+          current={date.toISOString().split('T')[0]}
+          minDate={'1001-01-01'}
+          maxDate={'3000-12-31'}
+          onDayPress={(day) => {
+            onSelect(new Date(day.dateString));
+            onClose();
+          }}
+          renderArrow={(direction) => (
+            <Ionicons
+              name={direction === 'left' ? 'chevron-back' : 'chevron-forward'}
+              size={24}
+              color="#4CD04D"
+            />
+          )}
+          markedDates={{
+            [date.toISOString().split('T')[0]]: {
+              selected: true,
+              selectedColor: '#4CD04D'
+            }
+          }}
+        />
+      </View>
+    </View>
+  </Modal>
+);
   // const invoices = [];
   const invoices = [
     {
@@ -881,6 +917,48 @@ const InvoiceScreen = () => {
       message: t('paid'),
     },
   ];
+  const estimates = [
+  {
+    id: 'EST00001',
+    clientName: 'Divyesh Shah',
+    amount: 15200,
+    status: 'Pending',
+    dueDate: '10/08/2025',
+    message: t('pending'),
+  },
+  {
+    id: 'EST00002',
+    clientName: 'Shivangi Rathi',
+    amount: 8000,
+    status: 'Approved',
+    dueDate: '15/08/2025',
+    message: t('approved'),
+  },
+  {
+    id: 'EST00003',
+    clientName: 'Karan Patel',
+    amount: 9500,
+    status: 'Overdue',
+    dueDate: '01/08/2025',
+    message: t('overdue'),
+  },
+  {
+    id: 'EST00004',
+    clientName: 'Pooja Nair',
+    amount: 12000,
+    status: 'Cancel',
+    dueDate: '20/08/2025',
+    message: t('cancel'),
+  },
+  {
+    id: 'EST00005',
+    clientName: 'Ajay Sharma',
+    amount: 10000,
+    status: 'Pending',
+    dueDate: '25/08/2025',
+    message: t('pending'),
+  },
+];
 
   const totalSales = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
   const totalReceived = invoices
@@ -891,8 +969,12 @@ const InvoiceScreen = () => {
         invoiceId: `INV${String(invoices.length + 1).padStart(5, '0')}`
       
     })
-  const handleContinue2 = () => navigation.navigate('New-invoice');
-  const RedirectClientScreen = () => navigation.navigate('Client-Screen');
+  const RedirectEstimateScreen = () => navigation.navigate('Estimate-screen', {
+      
+        invoiceId: `EST${String(estimates.length + 1).padStart(5, '0')}`
+      
+    });
+  const RedirectClientScreen = () => navigation.navigate('Add-client');
   const RedirectAdditemScreen = () => navigation.navigate('Add-item');
 
   const getHeaderTitle = () => {
@@ -1024,7 +1106,7 @@ const InvoiceScreen = () => {
         </View>
       )}
 
-      {selectedTab === 'estimate' && (
+      {/* {selectedTab === 'estimate' && (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.content}>
             <Image source={estimate} style={styles.placeholderIcon} />
@@ -1037,7 +1119,79 @@ const InvoiceScreen = () => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+      )} */}
+      {selectedTab === 'estimate' && (
+  <View style={{ flex: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      {estimates.filter(item => activeTab === 'All' || item.status === activeTab).length > 0 ? (
+        estimates
+          .filter(item => activeTab === 'All' || item.status === activeTab)
+          .map((item, index) => (
+            <View key={index} style={styles.card}>
+              <View style={styles.rowBetween}>
+                <Text style={styles.invoiceId}>{item.id}</Text>
+                <Text style={styles.clientName}>{item.clientName}</Text>
+              </View>
+              <View style={styles.rowBetween}>
+                <Text style={styles.date}>{item.dueDate}</Text>
+                <Text style={styles.amount}>₹{item.amount.toLocaleString()}</Text>
+              </View>
+              <View style={styles.rowBetween}>
+                <Text style={styles.message}>{item.message}</Text>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    {
+                      backgroundColor:
+                        item.status === 'Approved'
+                          ? '#E0F5E9'
+                          : item.status === 'Overdue'
+                          ? '#FFF3E0'
+                          : item.status === 'Cancel'
+                          ? '#FFEBEE'
+                          : '#E3F2FD',
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.statusText,
+                      {
+                        color:
+                          item.status === 'Approved'
+                            ? '#4CAF50'
+                            : item.status === 'Overdue'
+                            ? '#FB8C00'
+                            : item.status === 'Cancel'
+                            ? '#F44336'
+                            : '#2196F3',
+                      },
+                    ]}
+                  >
+                    {t(item.status.toLowerCase())}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          ))
+      ) : (
+        <View style={styles.content}>
+          <Image source={estimate} style={styles.placeholderIcon} />
+          <Text style={styles.noInvoiceText}>
+            {t('no_estimate_message') + '\n' + t('create_estimate_prompt')}
+          </Text>
+        </View>
       )}
+    </ScrollView>
+    <View style={styles.bottomTab}>
+      <TouchableOpacity style={styles.createBtn} onPress={RedirectEstimateScreen}>
+        <Ionicons name="add" size={20} color="#fff" />
+        <Text style={styles.createBtnText}>{t('create_estimate')}</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+)}
+
 
       {selectedTab === 'client' && (
         <View style={styles.content}>
@@ -1053,73 +1207,71 @@ const InvoiceScreen = () => {
       )}
 
       {selectedTab === 'report' && (
-        <ScrollView style={{ flex: 1 }}>
-          {/* Date & Frequency Select */}
-          <View style={styles.reportControls}>
-            <TouchableOpacity style={styles.dropdownBox} onPress={() => setShowDatePicker(true)}>
-              <Text style={styles.dropdownText}>
-                {selectedDate.toLocaleDateString()}
-              </Text>
-              <Ionicons name="chevron-down" size={16} color="#000" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.dropdownBox} onPress={() => setShowFrequencyModal(true)}>
-              <Text style={styles.dropdownText}>{frequency}</Text>
-              <Ionicons name="chevron-down" size={16} color="#000" />
-            </TouchableOpacity>
-          </View>
+  <ScrollView style={{ flex: 1 }}>
+    {/* Date & Frequency Select */}
+    <View style={styles.reportControls}>
+      <TouchableOpacity style={styles.dropdownBox} onPress={() => setShowDatePicker(true)}>
+        <Text style={styles.dropdownText}>
+          {selectedDate.toLocaleDateString()}
+        </Text>
+        <Ionicons name="chevron-down" size={16} color="#000"/>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.dropdownBox} onPress={() => setShowFrequencyModal(true)}>
+        <Text style={styles.dropdownText}>{frequency}</Text>
+        <Ionicons name="chevron-down" size={16} color="#000" />
+      </TouchableOpacity>
+    </View>
 
-          <View style={styles.reportPlaceholderBox} >
-            <CustomBarChart />
-          </View>
-          <View style={styles.reportPlaceholderBox} >
-            <Line />
-          </View>
+    <View style={styles.reportPlaceholderBox} >
+      <CustomBarChart />
+    </View>
+    <View style={styles.reportPlaceholderBox} >
+      <Line />
+    </View>
 
-          {/* Date Picker Dialog */}
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display="default"
-              onChange={(event, date) => {
-                setShowDatePicker(false);
-                if (date) setSelectedDate(date);
-              }}
-            />
-          )}
+    {/* ✅ Custom Date Picker */}
+    <CustomDatePicker
+      visible={showDatePicker}
+      date={selectedDate}
+      onSelect={(date) => {
+        setSelectedDate(date);
+      }}
+      onClose={() => setShowDatePicker(false)}
+    />
 
-          {/* Frequency Modal */}
-          <Modal transparent visible={showFrequencyModal} animationType="fade">
+    {/* Frequency Modal */}
+    <Modal transparent visible={showFrequencyModal} animationType="fade">
+      <TouchableOpacity
+        style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' }}
+        onPress={() => setShowFrequencyModal(false)}
+      >
+        <View
+          style={{
+            marginTop: 'auto',
+            backgroundColor: '#fff',
+            padding: 20,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          }}
+        >
+          {frequencyOptions.map(option => (
             <TouchableOpacity
-              style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' }}
-              onPress={() => setShowFrequencyModal(false)}
+              key={option}
+              style={{ paddingVertical: 12 }}
+              onPress={() => {
+                setFrequency(option);
+                setShowFrequencyModal(false);
+              }}
             >
-              <View
-                style={{
-                  marginTop: 'auto',
-                  backgroundColor: '#fff',
-                  padding: 20,
-                  borderTopLeftRadius: 20,
-                  borderTopRightRadius: 20,
-                }}
-              >
-                {frequencyOptions.map(option => (
-                  <TouchableOpacity
-                    key={option}
-                    style={{ paddingVertical: 12 }}
-                    onPress={() => {
-                      setFrequency(option);
-                      setShowFrequencyModal(false);
-                    }}
-                  >
-                    <Text style={{ fontSize: 16 }}>{option}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <Text style={{ fontSize: 16 }}>{option}</Text>
             </TouchableOpacity>
-          </Modal>
-        </ScrollView>
-      )}
+          ))}
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  </ScrollView>
+)}
+
 
       {selectedTab === 'item' && (
         <View style={styles.content}>
@@ -1411,6 +1563,22 @@ const styles = StyleSheet.create({
     elevation: 3,
     overflow: 'hidden',
   },
+  modalOverlay: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0,0,0,0.3)', // Optional: Dimmed background
+},
+
+datePickerContainer: {
+  backgroundColor: '#fff',
+  borderRadius: 20,
+  padding: 20,
+  width: '90%',
+  maxWidth: 400,
+  elevation: 5,
+},
+
 });
 
 export default InvoiceScreen;

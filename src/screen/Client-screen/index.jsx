@@ -419,7 +419,8 @@ const ClientScreen = () => {
     >
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Invoice-m')} style={styles.backButton}>
           <Ionicons name="chevron-back" size={28} color="#000000" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Client</Text>

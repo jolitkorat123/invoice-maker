@@ -1593,7 +1593,7 @@ export default function NewInvoiceScreen() {
     startDate = new Date(),
     endDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     po = '',
-    title = 'Website Invoice',
+    title = 'Invoice Info',
   } = route.params || {};
 
   const toggleVisibility = () => setShowInvoiceNumber(!showInvoiceNumber);
@@ -1614,24 +1614,20 @@ export default function NewInvoiceScreen() {
       colors={['#4cd04c27', 'rgba(76, 208, 76, 0)']}
       style={styles.background}
     >
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={20} color="#fdfffdff" />
-          </TouchableOpacity>
-          <Text style={styles.title}>New Invoice</Text>
-          <TouchableOpacity onPress={toggleVisibility}>
-            <Ionicons
-              name={showInvoiceNumber ? 'eye-outline' : 'eye-off-outline'}
-              size={24}
-              color="black"
-            />
-          </TouchableOpacity>
-        </View>
-
+      <View style={styles.customHeader}>
+  <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+    <Ionicons name="chevron-back" size={20} color="#ffffff" />
+  </TouchableOpacity>
+  <Text style={styles.headerTitle}>New Invoice</Text>
+  <TouchableOpacity onPress={toggleVisibility}>
+    <Ionicons
+      name={showInvoiceNumber ? 'eye-outline' : 'eye-off-outline'}
+      size={22}
+      color="#000"
+    />
+  </TouchableOpacity>
+</View>
+        <ScrollView contentContainerStyle={styles.container}>
         <TouchableOpacity
           style={styles.invoiceInfoCard}
           onPress={() =>
@@ -1860,18 +1856,24 @@ export default function NewInvoiceScreen() {
 const styles = StyleSheet.create({
   background: { flex: 1 },
   container: { padding: 20, paddingBottom: 40 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  backButton: {
-    backgroundColor: '#4CD04D',
-    paddingHorizontal: scale(10),
-    paddingVertical: verticalScale(9),
-    borderRadius: scale(100),
-  },
+customHeader: {
+  backgroundColor: '#E3F8E3', // Light green background
+  paddingVertical: 16,
+  paddingHorizontal: 20,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+headerTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#000',
+},
+backButton: {
+  backgroundColor: '#4CD04D',
+  padding: 8,
+  borderRadius: 20,
+},
   title: { fontSize: 20, fontWeight: 'bold' },
   invoiceInfoCard: {
     backgroundColor: 'white',
@@ -1983,4 +1985,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CD04D33',
     borderColor: '#4CD04D',
   },
+  customHeader: {
+  backgroundColor: '#E3F8E3', // Light green background
+  paddingVertical: 16,
+  paddingHorizontal: 20,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+headerTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#000',
+},
+backButton: {
+  backgroundColor: '#4CD04D',
+  padding: 8,
+  borderRadius: 20,
+},
+
 });

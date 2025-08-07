@@ -95,7 +95,14 @@ const resources = {
       client_message:"You haven’t added any clients yet.",
       create_client_prompt:"Tap ‘Add Client’ to get started.",
       item_message:"You haven’t created any estimates yet.",
-      create_item_prompt:"Tap ‘Add Item’ to get started."
+      create_item_prompt:"Tap ‘Add Item’ to get started.",
+      pending: "Pending",
+  approved: "Approved",
+  overdue: "Overdue",
+  cancel: "Cancelled",
+  no_estimate_message: "No estimates found",
+  create_estimate_prompt: "Start by creating a new estimate",
+  create_estimate: "Create Estimate",
     },
   },
   hi: {

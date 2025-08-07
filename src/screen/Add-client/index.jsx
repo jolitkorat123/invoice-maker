@@ -1458,9 +1458,10 @@ const AddClientScreen = () => {
   return (
     <LinearGradient colors={['#55d04c39', 'rgba(76, 208, 76, 0)']} style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
-        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Client-Screen')} style={styles.backButton}>
+  <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
+</TouchableOpacity>
+
         <Text style={styles.title}>{editingClient ? 'Edit Client' : 'Add Client'}</Text>
       </View>
 
