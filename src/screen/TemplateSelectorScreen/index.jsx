@@ -83,7 +83,9 @@ export default function TemplateSelectorScreen() {
   useEffect(() => {
     const initDb = async () => {
       try {
-        const database = await SQLite.openDatabaseAsync('userdb.db');
+        const database = await SQLite.openDatabaseAsync('userdb.db', {
+          useNewConnection: true
+        });
         setDb(database);
         await fetchItems(database);
       } catch (err) {
