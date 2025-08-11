@@ -14,62 +14,62 @@ import { Ionicons } from '@expo/vector-icons';
 const settingsData = [
   {
     label: 'Business Info',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/business-info.png'),
+    icon: require('../../../assets/screen-24/business-info.png'),
     navigateTo: 'BusinessInfo',
   },
   {
     label: 'Templates',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/templates.png'),
+    icon: require('../../../assets/screen-24/templates.png'),
     navigateTo: 'Templates',
     value: ' ',
   },
   {
     label: 'Default Currency',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/default-currency.png'),
+    icon: require('../../../assets/screen-24/default-currency.png'),
     navigateTo: 'Currency-screen',
     value: 'INR ₹',
   },
   {
     label: 'Number Format',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/number-format.png'),
+    icon: require('../../../assets/screen-24/number-format.png'),
     navigateTo: 'Numberformat-screen',
     value: '1,00,000.00',
   },
   {
     label: 'Date Format',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/date-formate.png'),
+    icon: require('../../../assets/screen-24/date-formate.png'),
     navigateTo: 'Dateformat-screen',
     value: '31/12/2025',
   },
   {
     label: 'Language',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/language.png'),
+    icon: require('../../../assets/screen-24/language.png'),
     navigateTo: 'language-selector',
     value: 'Default',
   },
   {
     label: 'Share App',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/share-app.png'),
+    icon: require('../../../assets/screen-24/share-app.png'),
     navigateTo: 'ShareApp',
   },
   {
     label: 'Rate Us',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/rate-us.png'),
+    icon: require('../../../assets/screen-24/rate-us.png'),
     navigateTo: 'RateUs',
   },
   {
     label: 'Privacy Policy',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/privacy-policy.png'),
+    icon: require('../../../assets/screen-24/privacy-policy.png'),
     navigateTo: 'PrivacyPolicy',
   },
   {
     label: 'Terms & Condition',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/terms-and-conditions.png'),
+    icon: require('../../../assets/screen-24/terms-and-conditions.png'),
     navigateTo: 'TermsConditions',
   },
   {
     label: 'Signature',
-    icon: require('E:/react native/invoice-maker/assets/screen-24/signature.png'),
+    icon: require('../../../assets/screen-24/signature.png'),
     navigateTo: 'Signature-screen',
   },
 ];
@@ -95,7 +95,7 @@ const SettingsScreen = () => {
           <View style={styles.rowRight}>
             {item.value && <Text style={styles.value}>{item.value}</Text>}
             <Image
-  source={require('E:/react native/invoice-maker/assets/screen-24/errow.png')}
+  source={require('../../../assets/screen-24/business-info.png')}
   style={styles.arrow}
 />
           </View>
