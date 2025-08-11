@@ -120,7 +120,7 @@ const { t, i18n } = useTranslation();
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#4CD04D',
+    // backgroundColor: '#4CD04D',
   },
   container: {
     flex: 1,

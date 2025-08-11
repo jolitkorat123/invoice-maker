@@ -14,13 +14,18 @@
       "backgroundColor": "#ff0000"
     },
     "android": {
-      "package": "com.yourcompany.invoicemaker"
+      "package": "com.jolit.invoicemaker"
     },
     "ios": {
       "supportsTablet": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "61b145f6-46a1-475a-9eed-45768cabf99b"
+      }
     }
   }
 }
