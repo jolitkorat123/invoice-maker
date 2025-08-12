@@ -94,10 +94,6 @@ const SettingsScreen = () => {
           </View>
           <View style={styles.rowRight}>
             {item.value && <Text style={styles.value}>{item.value}</Text>}
-            <Image
-  source={require('../../../assets/screen-24/business-info.png')}
-  style={styles.arrow}
-/>
           </View>
         </TouchableOpacity>
       ))}
