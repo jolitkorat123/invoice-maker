@@ -236,7 +236,8 @@ const InvoiceScreen = () => {
     invoiceId: `EST${String(estimates.length + 1).padStart(5, '0')}`
 
   });
-  const RedirectClientScreen = () => navigation.navigate('Add-client');
+  const RedirectClientScreen = () => navigation.navigate('Client-Screen');
+  // const RedirectClientScreen = () => navigation.navigate('Add-client');
   const RedirectAdditemScreen = () => navigation.navigate('Add-item');
 
   const getHeaderTitle = () => {
