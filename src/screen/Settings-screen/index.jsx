@@ -15,12 +15,12 @@ const settingsData = [
   {
     label: 'Business Info',
     icon: require('../../../assets/screen-24/business-info.png'),
-    navigateTo: 'BusinessInfo',
+    navigateTo: 'company-profile',
   },
   {
     label: 'Templates',
     icon: require('../../../assets/screen-24/templates.png'),
-    navigateTo: 'Templates',
+    navigateTo: 'TemplateSelector',
     value: ' ',
   },
   {
