@@ -30,6 +30,7 @@ import TemplateSelectorScreen from './src/screen/TemplateSelectorScreen';
 import Template1 from './src/screen/Templates/Template1';
 import Template2 from './src/screen/Templates/Template2';
 import Template3 from './src/screen/Templates/Template3';
+import { CurrencyProvider } from './src/context/CurrencyContext.jsx';
 
 
 
@@ -39,6 +40,7 @@ export default function App() {
   const { t } = useTranslation();
   return (
     <I18nextProvider i18n={i18n}>
+      <CurrencyProvider>
       <View style={styles.container}>
         <StatusBar backgroundColor="#2CC84D" barStyle="light-content" />
         <NavigationContainer>
@@ -68,6 +70,7 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </View>
+      </CurrencyProvider>
     </I18nextProvider>
   );
 }

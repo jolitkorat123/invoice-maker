@@ -317,20 +317,20 @@ const CustomBarChart = () => {
         {/* Scrollable chart */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={{ width: chartWidth }}>
-           <BarChart
-  data={chartData}
-  barWidth={30}
-  spacing={30}
-  yAxisThickness={0}       // no y-axis line from library
-  xAxisThickness={0}       // no default x-axis line
-  hideYAxisText            // hide gifted-charts' y-axis labels
-  showValuesOnTopOfBars
-  noOfSections={4}
-  maxValue={925}
-  height={chartHeight - 52}
-  xAxisLabelTextStyle={styles.xAxisLabel}
-  initialSpacing={20}      // keeps first bar away from axis
-/>
+            <BarChart
+              data={chartData}
+              barWidth={30}
+              spacing={30}
+              yAxisThickness={0}       // no y-axis line from library
+              xAxisThickness={0}       // no default x-axis line
+              hideYAxisText            // hide gifted-charts' y-axis labels
+              showValuesOnTopOfBars
+              noOfSections={4}
+              maxValue={925}
+              height={chartHeight - 52}
+              xAxisLabelTextStyle={styles.xAxisLabel}
+              initialSpacing={20}      // keeps first bar away from axis
+            />
 
 
             {/* Axes */}

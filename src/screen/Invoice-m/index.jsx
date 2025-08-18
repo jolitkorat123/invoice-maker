@@ -848,6 +848,15 @@
 
 // export default InvoiceScreen;
 
+
+
+
+
+
+
+
+
+
 import React, { useState } from 'react';
 import {
   View,
@@ -869,10 +878,12 @@ import item from '../../../assets/screen-13/box.png';
 import { Calendar } from 'react-native-calendars';
 import CustomBarChart from '../Chart/barChart';
 import Line from '../Chart/lineChart';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const InvoiceScreen = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const { selectedCurrency } = useCurrency();
 
   const [activeTab, setActiveTab] = useState('All');
   const [selectedTab, setSelectedTab] = useState('invoice');
@@ -998,6 +1009,11 @@ const InvoiceScreen = () => {
     </Modal>
   );
 
+  const formatAmount = (amount) => {
+    if (!selectedCurrency) return amount.toLocaleString();
+    return `${selectedCurrency.symbol}${amount.toLocaleString()}`;
+  };
+
   const totalSales = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
   const totalReceived = invoices
     .filter(invoice => invoice.status === 'Paid')
@@ -1084,15 +1100,15 @@ const InvoiceScreen = () => {
         <View style={styles.statContainer}>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('total_sales')}</Text>
-            <Text style={styles.statValueGreen}>₹{totalSales.toLocaleString()}</Text>
+            <Text style={styles.statValueGreen}>{formatAmount(totalSales)}</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('total_received')}</Text>
-            <Text style={styles.statValueRed}>₹{totalReceived.toLocaleString()}</Text>
+            <Text style={styles.statValueRed}>{formatAmount(totalReceived)}</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>{t('total_overdue')}</Text>
-            <Text style={styles.statValueBlack}>₹0.00</Text>
+            <Text style={styles.statValueBlack}>{formatAmount(0)}</Text>
           </View>
         </View>
       )}
@@ -1134,7 +1150,7 @@ const InvoiceScreen = () => {
                     </View>
                     <View style={styles.rowBetween}>
                       <Text style={styles.date}>{item.dueDate}</Text>
-                      <Text style={styles.amount}>₹{item.amount.toLocaleString()}</Text>
+                      <Text style={styles.amount}>{formatAmount(item.amount)}</Text>
                     </View>
                     <View style={styles.rowBetween}>
                       <Text style={styles.message}>{item.message}</Text>
@@ -1230,7 +1246,7 @@ const InvoiceScreen = () => {
                     </View>
                     <View style={styles.rowBetween}>
                       <Text style={styles.date}>{item.dueDate}</Text>
-                      <Text style={styles.amount}>₹{item.amount.toLocaleString()}</Text>
+                      <Text style={styles.amount}>{formatAmount(item.amount)}</Text>
                     </View>
                     <View style={styles.rowBetween}>
                       <Text style={styles.message}>{item.message}</Text>

@@ -234,6 +234,8 @@
 //   },
 //   footerText: { fontSize: 12, color: '#1A1A1A' },
 // });
+//Workingg
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import * as SQLite from 'expo-sqlite';
