@@ -590,7 +590,10 @@ const CompanyProfile = () => {
                       <Picker
                         selectedValue={formik.values.taxType}
                         onValueChange={formik.handleChange('taxType')}
-                        style={styles.picker}
+                        style={[
+                      styles.picker,
+                      { color: formik.values.taxType ? '#444' : '#a3a2a2ff' }
+                    ]}
                       >
                         <Picker.Item label={t('tax_types')} value="" />
                         <Picker.Item label={t('GST')} value="gst" />
@@ -609,7 +612,10 @@ const CompanyProfile = () => {
                       <Picker
                         selectedValue={formik.values.businessNature}
                         onValueChange={formik.handleChange('businessNature')}
-                        style={styles.picker}
+                        style={[
+                      styles.picker,
+                      { color: formik.values.businessNature ? '#444' : '#a3a2a2ff' }
+                    ]}
                       >
                         <Picker.Item label={t('nature_of_business')} value="" />
                         <Picker.Item label={t('Retail')} value="retail" />
@@ -753,3 +759,5 @@ const styles = StyleSheet.create({
 });
 
 export default CompanyProfile;
+
+
