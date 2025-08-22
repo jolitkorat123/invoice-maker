@@ -472,13 +472,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as SQLite from 'expo-sqlite';
 
 // open DB
-const db = SQLite.openDatabaseSync('userdb.db');
+const db = SQLite.openDatabaseSync('userdb.db', {
+  useNewConnection: true,
+});
 
 const SignatureScreenComponent = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [signature, setSignature] = useState(null);
   const [imageUri, setImageUri] = useState(null);
+  const [isSaved, setIsSaved] = useState(false); // ✅ to prevent duplicate save
   const signRef = useRef();
 
   // create table if not exists
@@ -512,13 +515,9 @@ const SignatureScreenComponent = () => {
       if (!sig || sig === "data:,") return; // ignore empty
       setSignature(sig);
       setImageUri(null);
-
-      await db.runAsync(
-        'INSERT INTO signatures (fileUri) VALUES (?);',
-        [sig]
-      );
+      setIsSaved(false); // reset save status when new signature created
     } catch (err) {
-      console.error("Auto-Save Error:", err);
+      console.error("Signature Error:", err);
     }
   };
 
@@ -527,6 +526,7 @@ const SignatureScreenComponent = () => {
       signRef.current.clearSignature();
     }
     setSignature(null);
+    setIsSaved(false);
   };
 
   const handleGalleryPick = async () => {
@@ -538,18 +538,24 @@ const SignatureScreenComponent = () => {
 
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
-      setSignature(null); // clear signature if image selected
+      setSignature(null); 
+      setIsSaved(false);
     }
   };
 
   const handleSave = async () => {
     try {
+      if (isSaved) {
+        Alert.alert("Already Saved", "This signature is already saved.");
+        return;
+      }
+
       let finalData = null;
 
       if (signature) {
-        finalData = signature; // already auto-saved
+        finalData = signature;
       } else if (imageUri) {
-        finalData = imageUri; // uri from gallery
+        finalData = imageUri;
       }
 
       if (!finalData) {
@@ -557,21 +563,20 @@ const SignatureScreenComponent = () => {
         return;
       }
 
-      // only insert if image picked (signatures already saved)
-      if (imageUri) {
-        await db.runAsync(
-          'INSERT INTO signatures (fileUri) VALUES (?);',
-          [finalData]
-        );
-      }
+      // ✅ Insert only once
+      await db.runAsync(
+        'INSERT INTO signatures (fileUri) VALUES (?);',
+        [finalData]
+      );
 
+      setIsSaved(true); // mark as saved
       Alert.alert("Success", "Signature saved successfully!");
-      
+
       // Return the signature data to the previous screen
       if (route.params?.onSignatureSave) {
         route.params.onSignatureSave(finalData);
       }
-      
+
       navigation.goBack();
     } catch (err) {
       console.error("Save Error:", err);
@@ -608,8 +613,8 @@ const SignatureScreenComponent = () => {
           {!imageUri && (
             <SignatureScreen
               ref={signRef}
-              onEnd={handleEnd}          // detects when drawing ends
-              onOK={handleSignature}     // gets Base64 after readSignature
+              onEnd={handleEnd}
+              onOK={handleSignature}
               autoClear={false}
               webStyle={stylePad}
               imageType="image/png"

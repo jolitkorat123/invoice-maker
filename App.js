@@ -24,6 +24,9 @@ import NumberFormatScreen from './src/screen/Numberformat-screen';
 import DateFormatScreen from './src/screen/Dateformat-screen';
 import CurrencySelectorScreen from './src/screen/Currency-screen';
 import SignatureScreenComponent from './src/screen/Signature-screen';
+import Signaturelist from './src/screen/Signature-list';
+import Paymentmethod from './src/screen/Payment_Method-list';
+import TermsandCondition from './src/screen/Terms_Condition-list';
 import LineChart from './src/screen/Chart/lineChart/index.jsx';
 import BarChart from './src/screen/Chart/barChart/index.jsx';
 import TemplateSelectorScreen from './src/screen/TemplateSelectorScreen';
@@ -44,7 +47,7 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar backgroundColor="#2CC84D" barStyle="light-content" />
         <NavigationContainer>
-          {/* <Stack.Navigator initialRouteName="lineChart" screenOptions={{ headerShown: false }}> */}
+          {/* <Stack.Navigator initialRouteName="Payment-method-list" screenOptions={{ headerShown: false }}> */}
           <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="slider" component={Slider} />
             <Stack.Screen name="language-selector" component={LanguageSelector} />
@@ -61,6 +64,9 @@ export default function App() {
             <Stack.Screen name="Dateformat-screen" component={DateFormatScreen}/>
             <Stack.Screen name="Currency-screen" component={CurrencySelectorScreen}/>
             <Stack.Screen name="Signature-screen" component={SignatureScreenComponent}/>
+            <Stack.Screen name="Signature-list" component={Signaturelist}/>
+            <Stack.Screen name="Payment-method-list" component={Paymentmethod}/>
+            <Stack.Screen name="Terms-Condition-list" component={TermsandCondition}/>
             <Stack.Screen name="barChart" component={BarChart}/>
             <Stack.Screen name="lineChart" component={LineChart}/>
             <Stack.Screen name="TemplateSelector" component={TemplateSelectorScreen} />
