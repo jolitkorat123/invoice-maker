@@ -29,6 +29,7 @@ import Paymentmethod from './src/screen/Payment_Method-list';
 import TermsandCondition from './src/screen/Terms_Condition-list';
 import LineChart from './src/screen/Chart/lineChart/index.jsx';
 import BarChart from './src/screen/Chart/barChart/index.jsx';
+import ItemListScreen from './src/screen/Item-list/index.jsx';
 import TemplateSelectorScreen from './src/screen/TemplateSelectorScreen';
 import Template1 from './src/screen/Templates/Template1';
 import Template2 from './src/screen/Templates/Template2';
@@ -47,7 +48,7 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar backgroundColor="#2CC84D" barStyle="light-content" />
         <NavigationContainer>
-          {/* <Stack.Navigator initialRouteName="Payment-method-list" screenOptions={{ headerShown: false }}> */}
+          {/* <Stack.Navigator initialRouteName="Item-list" screenOptions={{ headerShown: false }}> */}
           <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="slider" component={Slider} />
             <Stack.Screen name="language-selector" component={LanguageSelector} />
@@ -58,6 +59,7 @@ export default function App() {
             <Stack.Screen name="Client-Screen" component={ClientScreen}/>
             <Stack.Screen name="Add-client" component={AddClientScreen}/>
             <Stack.Screen name="Add-item" component={AddItemScreen}/>
+            <Stack.Screen name="Item-list" component={ItemListScreen}/>
             <Stack.Screen name="Invoice-info-screen" component={InvoiceInfoScreen}/>
             <Stack.Screen name="Settings-screen" component={settingsData}/>
             <Stack.Screen name="Numberformat-screen" component={NumberFormatScreen}/>

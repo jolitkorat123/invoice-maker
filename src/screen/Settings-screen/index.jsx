@@ -487,9 +487,16 @@ const SettingsScreen = () => {
       navigateTo: 'PrivacyPolicy',
     },
     {
+      label: 'Payment Method',
+      icon: require('../../../assets/screen-24/debit-card.png'),
+      navigateTo: 'Payment-method-list',
+      from: 'settings',
+    },
+    {
       label: 'Terms & Condition',
       icon: require('../../../assets/screen-24/terms-and-conditions.png'),
-      navigateTo: 'TermsConditions',
+      navigateTo: 'Terms-Condition-list',
+      from: 'settings',
     },
     {
       label: 'Signature',

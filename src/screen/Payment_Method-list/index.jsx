@@ -190,7 +190,7 @@
 // });
 
 // export default Paymentmethod;
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -203,62 +203,151 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import { useNavigation } from '@react-navigation/native';
+  Alert,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { scale, verticalScale, moderateScale } from "react-native-size-matters";
+import * as SQLite from "expo-sqlite";
 
-const Paymentmethod = ({ navigation }) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+const db = SQLite.openDatabaseSync("userdb.db", { useNewConnection: true });
+
+const Paymentmethod = ({ navigation, route }) => {
+  const from = route?.params?.from || '';
+
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [modalVisible, setModalVisible] = useState(false);
-  const [tempValue, setTempValue] = useState('');
+  const [tempValue, setTempValue] = useState("");
   const [paymentMethods, setPaymentMethods] = useState([]);
 
-  const addPaymentMethod = () => {
-    if (tempValue.trim()) {
-      const newMethod = {
-        id: Date.now().toString(),
-        text: tempValue,
-        date: `Added on ${new Date().toLocaleDateString()}`,
-      };
-      setPaymentMethods([...paymentMethods, newMethod]);
-      setTempValue('');
-      setModalVisible(false);
+  useEffect(() => {
+    try {
+      db.execSync(`
+        CREATE TABLE IF NOT EXISTS payment_methods (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          method TEXT,
+          createdAt TEXT DEFAULT (datetime('now', 'localtime'))
+        );
+      `);
+      loadPaymentMethods();
+    } catch (err) {
+      console.error("DB Init Error:", err);
     }
+  }, []);
+
+  const loadPaymentMethods = () => {
+    try {
+      const result = db.getAllSync("SELECT * FROM payment_methods ORDER BY id DESC;");
+      const data = result.map((item) => ({
+        id: Number(item.id),
+        text: item.method || '',
+        date: `Added on ${String(item.createdAt).slice(0, 10)}`,
+      }));
+      setPaymentMethods(data);
+      if (data.length === 0) setSelectedIndex(-1);
+      else if (selectedIndex >= data.length) setSelectedIndex(0);
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    }
+  };
+
+  const handleAddNewPaymentMethod = () => {
+    setTempValue("");
+    setModalVisible(true);
+  };
+
+  const handleSaveNewPaymentMethod = () => {
+    const value = tempValue.trim();
+    if (!value) return;
+    try {
+      db.runSync("INSERT INTO payment_methods (method) VALUES (?);", [value]);
+      setModalVisible(false);
+      setTempValue("");
+      loadPaymentMethods();
+    } catch (err) {
+      console.error("Insert Error:", err);
+    }
+  };
+
+  const handleDelete = (id) => {
+    Alert.alert('Delete Payment Method', 'Are you sure you want to delete this payment method?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          try {
+            db.runSync('DELETE FROM payment_methods WHERE id = ?;', [id]);
+            loadPaymentMethods();
+          } catch (err) {
+            console.error('Delete Error:', err);
+          }
+        },
+      },
+    ]);
+  };
+
+  const handleSaveSelection = () => {
+    if (from === 'settings') return;
+    if (selectedIndex < 0 || selectedIndex >= paymentMethods.length) return;
+
+    const selected = paymentMethods[selectedIndex];
+    const routes = navigation.getState()?.routes || [];
+    const prevRoute = routes.at(-2);
+    if (prevRoute?.params?.onPaymentMethodSave) {
+      try {
+        prevRoute.params.onPaymentMethodSave(selected.text);
+      } catch (e) {
+        console.warn('onPaymentMethodSave callback threw:', e);
+      }
+    }
+    navigation.goBack();
   };
 
   const renderItem = ({ item, index }) => {
     const isSelected = index === selectedIndex;
 
     return (
-      <TouchableOpacity
-        style={styles.optionContainer}
-        onPress={() => setSelectedIndex(index)}
-      >
-        <View style={styles.paymentItem}>
-          <Text style={styles.paymentText}>{item.text}</Text>
-          <Text style={styles.paymentDate}>{item.date}</Text>
-        </View>
-        <Image
-          source={require('../../../assets/screen-27/select.png')}
-          style={[
-            styles.checkIcon,
-            { tintColor: isSelected ? '#00C851' : '#C4C4C4' },
-          ]}
-        />
-      </TouchableOpacity>
+      <View style={[styles.optionContainer, isSelected && styles.selectedCard]}>
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={() => {
+            if (from !== 'settings') setSelectedIndex(index);
+          }}
+          activeOpacity={0.8}
+        >
+          <View style={styles.paymentItem}>
+            <Text style={styles.paymentText}>{item.text}</Text>
+            <Text style={styles.paymentDate}>{item.date}</Text>
+          </View>
+        </TouchableOpacity>
+
+        {from === 'settings' && (
+          <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.deleteBtn}>
+            <Ionicons name="trash" size={20} color="#ff4444" />
+          </TouchableOpacity>
+        )}
+
+        {from !== 'settings' && (
+          <Image
+            source={require("../../../assets/screen-27/select.png")}
+            style={[
+              styles.checkIcon,
+              { tintColor: isSelected ? "#00C851" : "#C4C4C4" },
+            ]}
+          />
+        )}
+      </View>
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#8aea8a27', 'rgba(76, 208, 76, 0)']}
+        colors={["#8aea8a27", "rgba(76, 208, 76, 0)"]}
         style={styles.gradientBackground}
       >
         <View style={{ flex: 1 }}>
-          {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
@@ -269,15 +358,14 @@ const Paymentmethod = ({ navigation }) => {
             <Text style={styles.headerTitle}>Payment Method</Text>
           </View>
 
-          {/* New Payment Method Button */}
           <View style={styles.fixedTop}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.newPaymentCard}
-              onPress={() => setModalVisible(true)}
+              onPress={handleAddNewPaymentMethod}
             >
               <View style={styles.leftContent}>
                 <Image
-                  source={require('../../../assets/screen-14/debit-card.png')}
+                  source={require("../../../assets/screen-14/debit-card.png")}
                   style={styles.paymentIcon}
                 />
                 <Text style={styles.newPaymentText}>New Payment Method</Text>
@@ -290,13 +378,10 @@ const Paymentmethod = ({ navigation }) => {
             <Text style={styles.paymentlist}>Payment Method List:</Text>
           </View>
 
-          {/* Payment Methods List */}
           <ScrollView style={styles.listContainer}>
             {paymentMethods.length > 0 ? (
               paymentMethods.map((method, index) => (
-                <View key={method.id}>
-                  {renderItem({ item: method, index })}
-                </View>
+                <View key={method.id}>{renderItem({ item: method, index })}</View>
               ))
             ) : (
               <View style={styles.emptyState}>
@@ -311,26 +396,26 @@ const Paymentmethod = ({ navigation }) => {
           </ScrollView>
         </View>
 
-        {/* Save Button */}
-        <TouchableOpacity style={styles.saveButton}>
-          <Text style={styles.saveText}>Save</Text>
-        </TouchableOpacity>
+        {from !== 'settings' && (
+          <TouchableOpacity style={styles.saveButton} onPress={handleSaveSelection}>
+            <Text style={styles.saveText}>Save</Text>
+          </TouchableOpacity>
+        )}
 
-        {/* Add Payment Method Modal */}
         <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         >
-          <KeyboardAvoidingView 
+          <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.modalContainer}
           >
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Add Payment Method</Text>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => setModalVisible(false)}
                   style={styles.closeButton}
                 >
@@ -352,20 +437,26 @@ const Paymentmethod = ({ navigation }) => {
                     numberOfLines={5}
                     textAlignVertical="top"
                   />
-                  <Text style={styles.charCount}>{`${tempValue.length}/500`}</Text>
+                  <Text style={styles.charCount}>
+                    {`${tempValue.length}/500`}
+                  </Text>
                 </View>
               </ScrollView>
 
               <View style={styles.modalFooter}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={[styles.modalButton, styles.cancelButton]}
                   onPress={() => setModalVisible(false)}
                 >
                   <Text style={styles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
-                  style={[styles.modalButton, styles.addButton, !tempValue.trim() && styles.disabledButton]}
-                  onPress={addPaymentMethod}
+                <TouchableOpacity
+                  style={[
+                    styles.modalButton,
+                    styles.addButton,
+                    !tempValue.trim() && styles.disabledButton,
+                  ]}
+                  onPress={handleSaveNewPaymentMethod}
                   disabled={!tempValue.trim()}
                 >
                   <Text style={styles.addButtonText}>Add</Text>
@@ -380,13 +471,8 @@ const Paymentmethod = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  gradientBackground: {
-    flex: 1,
-    padding: scale(16),
-  },
+  container: { flex: 1 },
+  gradientBackground: { flex: 1, padding: scale(16) },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -401,7 +487,6 @@ const styles = StyleSheet.create({
     marginRight: scale(28),
     color: '#333',
   },
-  // New Payment Card Style
   newPaymentCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -414,21 +499,9 @@ const styles = StyleSheet.create({
     elevation: 2,
     shadowColor: '#4CD04D',
   },
-  leftContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  paymentIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-    marginRight: 12,
-  },
-  newPaymentText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#000',
-  },
+  leftContent: { flexDirection: 'row', alignItems: 'center' },
+  paymentIcon: { width: 24, height: 24, resizeMode: 'contain', marginRight: 12 },
+  newPaymentText: { fontSize: 16, fontWeight: '500', color: '#000' },
   plusCircle: {
     width: 25,
     height: 25,
@@ -437,19 +510,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  plusText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  paymentlist: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 10,
-  },
-  listContainer: {
-    flex: 1,
-  },
+  plusText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  paymentlist: { fontSize: 16, fontWeight: '500', marginBottom: 10 },
+  listContainer: { flex: 1 },
   optionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -462,23 +525,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 8,
   },
-  paymentItem: {
-    flex: 1,
-  },
-  paymentText: {
-    fontSize: scale(15),
-    color: '#333',
-    marginBottom: 4,
-  },
-  paymentDate: {
-    fontSize: scale(12),
-    color: '#888',
-  },
-  checkIcon: {
-    width: scale(20),
-    height: scale(20),
-    resizeMode: 'contain',
-  },
+  selectedCard: { borderColor: '#00C851', borderWidth: 2 },
+  paymentItem: { flex: 1 },
+  paymentText: { fontSize: scale(15), color: '#333', marginBottom: 4 },
+  paymentDate: { fontSize: scale(12), color: '#888' },
+  checkIcon: { width: scale(20), height: scale(20), resizeMode: 'contain' },
+  deleteBtn: { marginLeft: 10, padding: 5 },
   saveButton: {
     backgroundColor: '#4CD04D',
     paddingVertical: 12,
@@ -486,11 +538,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  saveText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: '600',
-  },
+  saveText: { color: '#fff', fontSize: 20, fontWeight: '600' },
   backButton: {
     backgroundColor: '#4CD04D',
     paddingHorizontal: scale(5),
@@ -498,22 +546,9 @@ const styles = StyleSheet.create({
     borderRadius: scale(100),
     zIndex: 1,
   },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
-  },
-  emptyStateText: {
-    fontSize: 16,
-    color: '#888',
-    marginBottom: 8,
-  },
-  emptyStateSubtext: {
-    fontSize: 14,
-    color: '#aaa',
-    textAlign: 'center',
-  },
-  // Modal Styles
+  emptyState: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40 },
+  emptyStateText: { fontSize: 16, color: '#888', marginBottom: 8 },
+  emptyStateSubtext: { fontSize: 14, color: '#aaa', textAlign: 'center' },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -535,38 +570,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  closeButton: {
-    padding: 4,
-  },
-  modalBody: {
-    padding: 16,
-  },
-  modalLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 8,
-  },
-  textAreaWrapper: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  textArea: {
-    padding: 12,
-    minHeight: 120,
-    fontSize: 16,
-  },
-  charCount: {
-    textAlign: 'right',
-    padding: 8,
-    fontSize: 12,
-    color: '#888',
-  },
+  modalTitle: { fontSize: 18, fontWeight: 'bold' },
+  closeButton: { padding: 4 },
+  modalBody: { padding: 16 },
+  modalLabel: { fontSize: 16, fontWeight: '500', marginBottom: 8 },
+  textAreaWrapper: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginBottom: 16 },
+  textArea: { padding: 12, minHeight: 120, fontSize: 16 },
+  charCount: { textAlign: 'right', padding: 8, fontSize: 12, color: '#888' },
   modalFooter: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -574,28 +584,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
-  modalButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 6,
-    marginLeft: 10,
-  },
-  cancelButton: {
-    backgroundColor: '#f0f0f0',
-  },
-  cancelButtonText: {
-    color: '#333',
-  },
-  addButton: {
-    backgroundColor: '#4CD04D',
-  },
-  disabledButton: {
-    backgroundColor: '#c4c4c4',
-  },
-  addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
+  modalButton: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 6, marginLeft: 10 },
+  cancelButton: { backgroundColor: '#f0f0f0' },
+  cancelButtonText: { color: '#333' },
+  addButton: { backgroundColor: '#4CD04D' },
+  disabledButton: { backgroundColor: '#c4c4c4' },
+  addButtonText: { color: 'white', fontWeight: 'bold' },
 });
 
 export default Paymentmethod;
