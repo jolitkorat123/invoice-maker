@@ -1863,7 +1863,7 @@ const AddItemScreen = () => {
       style={styles.container}
     >
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.navigate("Item-list")} style={styles.backButton}>
           <Ionicons name="chevron-back" size={28} color="#fdfffdff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{editingItem ? 'Edit Item' : 'Add Item'}</Text>

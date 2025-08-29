@@ -2165,84 +2165,18 @@ const InvoiceScreen = () => {
 
       {/* Item Tab Content */}
       {selectedTab === 'item' && (
-        <View style={{ flex: 1 }}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }}>
-            {items.length > 0 ? (
-              items.map((item) => (
-                <View key={item.id} style={styles.itemCard}>
-                  <View style={styles.itemHeader}>
-                    <Text style={styles.itemName}>{item.itemName}</Text>
-                    <View style={styles.itemActions}>
-                      <TouchableOpacity 
-                        onPress={() => RedirectEditItemScreen(item)}
-                        style={styles.actionButton}
-                      >
-                        <Ionicons name="pencil" size={20} color="#4CAF50" />
-                      </TouchableOpacity>
-                      <TouchableOpacity 
-                        onPress={() => confirmDelete(item)}
-                        style={styles.actionButton}
-                      >
-                        <Ionicons name="trash" size={20} color="#FF3B30" />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={styles.itemDetails}>
-                    <Text style={styles.itemPrice}>
-                      {formatAmount(parseInt(item.itemPrice))}
-                    </Text>
-                    <Text style={styles.itemUnit}>{item.unit}</Text>
-                  </View>
-                  <Text style={styles.itemDescription} numberOfLines={2}>
-                    {item.description}
-                  </Text>
-                </View>
-              ))
-            ) : (
-              <View style={styles.content}>
-                <Image source={item} style={styles.placeholderIcon} />
-                <Text style={styles.noInvoiceText}>
-                  {t('item_message') + '\n' + t('create_item_prompt')}
-                </Text>
-              </View>
-            )}
-          </ScrollView>
-          {items.length > 0 && (
-            <View style={styles.bottomTab}>
-              <TouchableOpacity style={styles.createBtn} onPress={RedirectAdditemScreen}>
-                <Ionicons name="add" size={20} color="#fff" />
-                <Text style={styles.createBtnText}>{t('add_item')}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      )}
+         <View style={styles.content}>
+           <Image source={item} style={styles.placeholderIcon} />
+           <Text style={styles.noInvoiceText}>
+             {t('item_message') + '\n' + t('create_item_prompt')}
+           </Text>
+           <TouchableOpacity style={styles.createBtn} onPress={RedirectAdditemScreen}>
+             <Ionicons name="add" size={20} color="#fff" />
+             <Text style={styles.createBtnText}>{t('add_item')}</Text>
+           </TouchableOpacity>
+         </View>
+       )}
 
-      {/* Delete Confirmation Modal */}
-      <Modal transparent visible={showDeleteModal} animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Delete Item</Text>
-            <Text style={styles.deleteMessage}>
-              Are you sure you want to delete "{itemToDelete?.itemName}"?
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => setShowDeleteModal(false)}
-              >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.changeButton, { backgroundColor: '#FF3B30' }]}
-                onPress={() => deleteItem(itemToDelete?.id)}
-              >
-                <Text style={styles.changeButtonText}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
 
       {/* Bottom Nav */}
       <View style={styles.bottomNav}>

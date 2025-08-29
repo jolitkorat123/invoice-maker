@@ -2747,13 +2747,16 @@ export default function NewInvoiceScreen() {
   const [companyData, setCompanyData] = useState(null);
   const [selectedClient, setSelectedClient] = useState(null);
 
+  // ✅ Add selectedItems state
+  const [selectedItems, setSelectedItems] = useState([]);
+
   // ✅ Extract parameters from route
   const {
     invoiceId = 1,
     invoiceData = {}
   } = route.params || {};
 
-  const invoiceNumber = `INV${String(invoiceId).padStart(5, "0")}`;
+  const invoiceNumber = `${String(invoiceId).padStart(5, "0")}`;
   const { 
     startDate = new Date(), 
     endDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -2883,6 +2886,23 @@ export default function NewInvoiceScreen() {
     closeModal();
   };
 
+  // ✅ Navigate to item selection
+  const navigateToItemSelection = () => {
+    navigation.navigate("Item-list", { 
+      isSelectionMode: true,
+      onItemsSelected: (items) => {
+        setSelectedItems(items);
+        
+        // Auto-fill quantity and price if only one item is selected
+        if (items.length === 1) {
+          const item = items[0];
+          setQuantity("1"); // Default quantity
+          setPrice(item.itemPrice.toString());
+        }
+      }
+    });
+  };
+
   // ✅ Handle Preview
   const handlePreview = () => {
     if (!companyData) {
@@ -2904,6 +2924,7 @@ export default function NewInvoiceScreen() {
         shipping,
         companyData,
         selectedClient,
+        selectedItems, // ✅ Pass selected items to preview
       }
     });
   };
@@ -2926,8 +2947,21 @@ export default function NewInvoiceScreen() {
     }
 
     try {
-      // Calculate totals
-      const subtotal = parseFloat(quantity) * parseFloat(price);
+      // Calculate totals based on selected items
+      let subtotal = 0;
+      
+      if (selectedItems.length > 0) {
+        // Calculate from selected items
+        selectedItems.forEach(item => {
+          const itemQuantity = parseFloat(quantity) || 1;
+          const itemPrice = parseFloat(item.itemPrice) || 0;
+          subtotal += itemQuantity * itemPrice;
+        });
+      } else {
+        // Fallback to manual input
+        subtotal = parseFloat(quantity) * parseFloat(price);
+      }
+      
       const discountAmount = discountType === "flat" 
         ? parseFloat(discountValue || 0) 
         : subtotal * (parseFloat(discountValue || 0) / 100);
@@ -3139,7 +3173,7 @@ export default function NewInvoiceScreen() {
         <View style={styles.sectionCard}>
           <TouchableOpacity
             style={styles.sectionRow}
-            onPress={() => navigation.navigate("Item-list")}
+            onPress={navigateToItemSelection}
           >
             <View style={styles.iconLabel}>
               <Image
@@ -3148,8 +3182,16 @@ export default function NewInvoiceScreen() {
               />
               <Text style={styles.label}>Items</Text>
             </View>
-            <View style={styles.addButton}>
-              <Ionicons name="add" size={18} color="white" />
+            <View style={styles.rightSection}>
+              {selectedItems.length > 0 ? (
+                <Text style={styles.valueText}>
+                  {selectedItems.length} item{selectedItems.length !== 1 ? 's' : ''} selected
+                </Text>
+              ) : (
+                <View style={styles.addButton}>
+                  <Ionicons name="add" size={18} color="white" />
+                </View>
+              )}
             </View>
           </TouchableOpacity>
 
