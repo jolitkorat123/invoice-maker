@@ -1125,17 +1125,24 @@ const TermsandCondition = ({ navigation, route }) => {
 
   const handleSaveSelection = () => {
     if (from === 'settings') return;
-    if (selectedIndex < 0 || selectedIndex >= termsList.length) return;
-    const selected = termsList[selectedIndex];
-    const routes = navigation.getState()?.routes || [];
-    const prevRoute = routes.at(-2);
-    if (prevRoute?.params?.onTermsSave) {
-      try {
-        prevRoute.params.onTermsSave(selected.text);
-      } catch (e) {
-        console.warn('onTermsSave callback threw:', e);
-      }
+    
+    if (selectedIndex < 0 || selectedIndex >= termsList.length) {
+      Alert.alert('Error', 'Please select a terms & conditions');
+      return;
     }
+
+    const selected = termsList[selectedIndex];
+    
+    
+    // Method 1: Through route params callback
+    if (route.params?.onTermsSave) {
+      route.params.onTermsSave(selected.text);
+      navigation.goBack();
+      return;
+    }
+    
+    // Method 2: Using navigation.setParams (fallback)
+    navigation.setParams({ selectedTerms: selected.text });
     navigation.goBack();
   };
 
