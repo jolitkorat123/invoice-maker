@@ -124,7 +124,7 @@ const ItemListScreen = () => {
     const isSelected = isSelectionMode && selectedItems.some(selected => selected.id === item.id);
 
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         onPress={() => toggleItemSelection(item)}
         activeOpacity={isSelectionMode ? 0.7 : 1}
       >
@@ -148,7 +148,7 @@ const ItemListScreen = () => {
           </View>
 
           {!isSelectionMode && (
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedItem(selectedItem === item.id ? null : item.id)}
               style={styles.menuButton}
             >
@@ -158,10 +158,10 @@ const ItemListScreen = () => {
 
           {!isSelectionMode && selectedItem === item.id && (
             <View style={styles.menu}>
-              <TouchableOpacity 
-                onPress={() => { 
-                  setSelectedItem(null); 
-                  editItem(item); 
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedItem(null);
+                  editItem(item);
                 }}
                 style={styles.menuItem}
               >
@@ -211,12 +211,13 @@ const ItemListScreen = () => {
             onPress={confirmSelection}
             disabled={selectedItems.length === 0}
           >
-            <Text style={[
-              styles.doneButton,
-              selectedItems.length === 0 && styles.doneButtonDisabled
-            ]}>
-              Done
-            </Text>
+            <Image
+              source={require('../../../assets/item-list/done.png')}
+              style={[
+                styles.doneImage,
+                selectedItems.length === 0 && styles.doneImageDisabled
+              ]}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -268,13 +269,13 @@ const ItemListScreen = () => {
                   Are you sure you want to delete "{itemToDelete?.itemName}"? This action cannot be undone.
                 </Text>
                 <View style={styles.modalButtons}>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[styles.modalButton, styles.cancelButton]}
                     onPress={() => setDeleteModalVisible(false)}
                   >
                     <Text style={styles.cancelButtonText}>Cancel</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[styles.modalButton, styles.deleteButton]}
                     onPress={() => deleteItem(itemToDelete?.id)}
                   >
@@ -307,10 +308,16 @@ const styles = StyleSheet.create({
     borderRadius: scale(100),
     zIndex: 1,
   },
-  headerTitle: { fontSize: 25, fontWeight: 'bold', color: '#fff' },
+  headerTitle: { fontSize: 22, fontWeight: 'bold', color: '#fff' },
   deleteIcon: { width: 24, height: 24 },
-  doneButton: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  doneButtonDisabled: { color: 'rgba(255, 255, 255, 0.5)' },
+  doneImage: {
+    width: 70, // adjust as per image size
+    height: 30,
+    resizeMode: 'contain',
+  },
+  doneImageDisabled: {
+    opacity: 0.5,
+  },
   itemBox: {
     backgroundColor: '#fff',
     padding: 15,
@@ -321,8 +328,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowRadius: 8,
+    elevation: 3,
     position: 'relative',
   },
   selectedItemBox: { borderWidth: 2, borderColor: '#41d152', backgroundColor: '#f0fff0' },
