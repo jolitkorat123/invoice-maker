@@ -48,8 +48,8 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar backgroundColor="#2CC84D" barStyle="light-content" />
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Item-list" screenOptions={{ headerShown: false }}>
-          {/* <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}> */}
+          {/* <Stack.Navigator initialRouteName="Item-list" screenOptions={{ headerShown: false }}> */}
+          <Stack.Navigator initialRouteName="slider" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="slider" component={Slider} />
             <Stack.Screen name="language-selector" component={LanguageSelector} />
             <Stack.Screen name="company-profile" component={CompanyProfile} />
