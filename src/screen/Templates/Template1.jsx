@@ -566,22 +566,543 @@
 //     marginTop: 6,
 //   },
 // });
+
+
+
+// import React from 'react';
+// import { 
+//   View, 
+//   Text, 
+//   StyleSheet, 
+//   ScrollView, 
+//   Image, 
+//   TouchableOpacity,
+//   Linking,
+//   Alert
+// } from 'react-native';
+// import { useRoute } from '@react-navigation/native';
+// import { Ionicons } from '@expo/vector-icons';
+// import * as Print from 'expo-print';
+// import * as Sharing from 'expo-sharing';
+// import * as FileSystem from 'expo-file-system';
+
+// export default function Template1Screen() {
+//   const route = useRoute();
+//   const { invoiceData } = route.params;
+
+//   // Format currency
+//   const formatCurrency = (amount) => {
+//     return new Intl.NumberFormat('en-IN', {
+//       style: 'currency',
+//       currency: 'INR',
+//       minimumFractionDigits: 2
+//     }).format(amount);
+//   };
+
+//   // Handle print functionality
+//   const handlePrint = async () => {
+//     try {
+//       const htmlContent = generateHTMLContent();
+//       const { uri } = await Print.printToFileAsync({ html: htmlContent });
+      
+//       if (await Sharing.isAvailableAsync()) {
+//         await Sharing.shareAsync(uri);
+//       } else {
+//         Alert.alert('Sharing not available', 'Unable to share the invoice on this device.');
+//       }
+//     } catch (error) {
+//       console.error('Error printing:', error);
+//       Alert.alert('Error', 'Failed to generate invoice PDF');
+//     }
+//   };
+
+//   // Generate HTML content for printing
+//   const generateHTMLContent = () => {
+//     return `
+//       <!DOCTYPE html>
+//       <html>
+//       <head>
+//         <meta charset="utf-8">
+//         <title>Invoice #${invoiceData.invoiceId}</title>
+//         <style>
+//           body { font-family: Arial, sans-serif; margin: 40px; }
+//           .header { display: flex; justify-content: space-between; margin-bottom: 30px; }
+//           .invoice-title { font-size: 24px; font-weight: bold; color: #333; }
+//           .invoice-number { font-size: 18px; color: #666; }
+//           .info-section { display: flex; justify-content: space-between; margin-bottom: 30px; }
+//           .info-column { width: 45%; }
+//           .section-title { font-weight: bold; margin-bottom: 10px; color: #333; }
+//           .details-section { margin-bottom: 30px; }
+//           .detail-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+//           .detail-label { font-weight: bold; color: #555; }
+//           .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+//           .items-table th { background-color: #f5f5f5; padding: 10px; text-align: left; border-bottom: 2px solid #ddd; }
+//           .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+//           .summary-section { margin-top: 20px; }
+//           .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+//           .total-row { border-top: 2px solid #333; padding-top: 10px; font-weight: bold; }
+//           .terms-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; }
+//           .signature-section { margin-top: 60px; text-align: right; }
+//           .signature-image { max-width: 200px; max-height: 80px; border: 1px solid #ddd; }
+//           .footer { margin-top: 60px; text-align: center; color: #666; font-size: 12px; }
+//         </style>
+//       </head>
+//       <body>
+//         <div class="header">
+//           <div class="invoice-title">INVOICE</div>
+//           <div class="invoice-number">#${invoiceData.invoiceId}</div>
+//         </div>
+
+//         <div class="info-section">
+//           <div class="info-column">
+//             <div class="section-title">From:</div>
+//             <div style="font-weight: bold;">${invoiceData.companyData.companyName}</div>
+//             <div>${invoiceData.companyData.address || ''}</div>
+//             <div>${invoiceData.companyData.email || ''}</div>
+//             <div>${invoiceData.companyData.phone || ''}</div>
+//             ${invoiceData.companyData.taxNo ? `<div>Tax No: ${invoiceData.companyData.taxNo}</div>` : ''}
+//           </div>
+
+//           <div class="info-column">
+//             <div class="section-title">To:</div>
+//             <div style="font-weight: bold;">
+//               ${invoiceData.selectedClient?.tradeName || invoiceData.selectedClient?.clientName || ''}
+//             </div>
+//             <div>${invoiceData.selectedClient?.address || ''}</div>
+//             <div>${invoiceData.selectedClient?.email || ''}</div>
+//             <div>${invoiceData.selectedClient?.phone || ''}</div>
+//             ${invoiceData.selectedClient?.taxNo ? `<div>Tax No: ${invoiceData.selectedClient.taxNo}</div>` : ''}
+//           </div>
+//         </div>
+
+//         <div class="details-section">
+//           <div class="detail-row">
+//             <span class="detail-label">Invoice Date:</span>
+//             <span>${new Date(invoiceData.startDate).toLocaleDateString()}</span>
+//           </div>
+//           <div class="detail-row">
+//             <span class="detail-label">Due Date:</span>
+//             <span>${new Date(invoiceData.endDate).toLocaleDateString()}</span>
+//           </div>
+//           ${invoiceData.po ? `
+//           <div class="detail-row">
+//             <span class="detail-label">PO Number:</span>
+//             <span>${invoiceData.po}</span>
+//           </div>
+//           ` : ''}
+//           ${invoiceData.selectedPaymentMethod ? `
+//           <div class="detail-row">
+//             <span class="detail-label">Payment Method:</span>
+//             <span>${invoiceData.selectedPaymentMethod}</span>
+//           </div>
+//           ` : ''}
+//         </div>
+
+//         <table class="items-table">
+//           <thead>
+//             <tr>
+//               <th>Description</th>
+//               <th>Qty</th>
+//               <th>Price</th>
+//               <th>Amount</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             ${invoiceData.selectedItems && invoiceData.selectedItems.length > 0 
+//               ? invoiceData.selectedItems.map(item => `
+//                 <tr>
+//                   <td>${item.itemName}</td>
+//                   <td>${item.quantity || 1}</td>
+//                   <td>${formatCurrency(item.itemPrice)}</td>
+//                   <td>${formatCurrency((item.quantity || 1) * item.itemPrice)}</td>
+//                 </tr>
+//               `).join('')
+//               : `
+//                 <tr>
+//                   <td>${invoiceData.title || 'Service'}</td>
+//                   <td>${invoiceData.quantity || 1}</td>
+//                   <td>${formatCurrency(invoiceData.price || 0)}</td>
+//                   <td>${formatCurrency((invoiceData.quantity || 1) * (invoiceData.price || 0))}</td>
+//                 </tr>
+//               `
+//             }
+//           </tbody>
+//         </table>
+
+//         <div class="summary-section">
+//           <div class="summary-row">
+//             <span>Subtotal:</span>
+//             <span>${formatCurrency(invoiceData.subtotal || 0)}</span>
+//           </div>
+          
+//           ${invoiceData.discountValue ? `
+//           <div class="summary-row">
+//             <span>Discount ${invoiceData.discountType === 'percent' ? `(${invoiceData.discountValue}%)` : ''}:</span>
+//             <span>-${formatCurrency(invoiceData.discountAmount || 0)}</span>
+//           </div>
+//           ` : ''}
+          
+//           ${invoiceData.shipping ? `
+//           <div class="summary-row">
+//             <span>Shipping:</span>
+//             <span>${formatCurrency(invoiceData.shippingAmount || 0)}</span>
+//           </div>
+//           ` : ''}
+          
+//           <div class="summary-row total-row">
+//             <span>TOTAL:</span>
+//             <span>${formatCurrency(invoiceData.total || 0)}</span>
+//           </div>
+//         </div>
+
+//         ${invoiceData.selectedTerms ? `
+//         <div class="terms-section">
+//           <div class="section-title">Terms & Conditions:</div>
+//           <div>${invoiceData.selectedTerms}</div>
+//         </div>
+//         ` : ''}
+
+        // ${invoiceData.signatureUri ? `
+        // <div class="signature-section">
+        //   <div class="section-title">Signature:</div>
+        //   <img src="${invoiceData.signatureUri}" class="signature-image" />
+        // </div>
+        // ` : ''}
+
+//         <div class="footer">
+//           <div>Thank you for your business!</div>
+//           <div>${invoiceData.companyData.companyName}</div>
+//         </div>
+//       </body>
+//       </html>
+//     `;
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <ScrollView contentContainerStyle={styles.scrollContent}>
+//         {/* Header */}
+//         <View style={styles.header}>
+//           <Text style={styles.invoiceTitle}>INVOICE</Text>
+//           <Text style={styles.invoiceNumber}>#{invoiceData.invoiceId}</Text>
+//         </View>
+
+//         {/* Company and Client Info */}
+//         <View style={styles.infoSection}>
+//           <View style={styles.infoColumn}>
+//             <Text style={styles.sectionTitle}>From:</Text>
+//             <Text style={styles.companyName}>{invoiceData.companyData.companyName}</Text>
+//             <Text>{invoiceData.companyData.address}</Text>
+//             <Text>{invoiceData.companyData.email}</Text>
+//             <Text>{invoiceData.companyData.phone}</Text>
+//             {invoiceData.companyData.taxNo && (
+//               <Text>Tax No: {invoiceData.companyData.taxNo}</Text>
+//             )}
+//           </View>
+
+//           <View style={styles.infoColumn}>
+//             <Text style={styles.sectionTitle}>To:</Text>
+//             <Text style={styles.clientName}>
+//               {invoiceData.selectedClient?.tradeName || invoiceData.selectedClient?.clientName}
+//             </Text>
+//             <Text>{invoiceData.selectedClient?.address}</Text>
+//             <Text>{invoiceData.selectedClient?.email}</Text>
+//             <Text>{invoiceData.selectedClient?.phone}</Text>
+//             {invoiceData.selectedClient?.taxNo && (
+//               <Text>Tax No: {invoiceData.selectedClient.taxNo}</Text>
+//             )}
+//           </View>
+//         </View>
+
+//         {/* Invoice Details */}
+//         <View style={styles.detailsSection}>
+//           <View style={styles.detailRow}>
+//             <Text style={styles.detailLabel}>Invoice Date:</Text>
+//             <Text>{new Date(invoiceData.startDate).toLocaleDateString()}</Text>
+//           </View>
+//           <View style={styles.detailRow}>
+//             <Text style={styles.detailLabel}>Due Date:</Text>
+//             <Text>{new Date(invoiceData.endDate).toLocaleDateString()}</Text>
+//           </View>
+//           {invoiceData.po && (
+//             <View style={styles.detailRow}>
+//               <Text style={styles.detailLabel}>PO Number:</Text>
+//               <Text>{invoiceData.po}</Text>
+//             </View>
+//           )}
+//           {invoiceData.selectedPaymentMethod && (
+//             <View style={styles.detailRow}>
+//               <Text style={styles.detailLabel}>Payment Method:</Text>
+//               <Text>{invoiceData.selectedPaymentMethod}</Text>
+//             </View>
+//           )}
+//         </View>
+
+//         {/* Items Table */}
+//         <View style={styles.itemsTable}>
+//           <View style={styles.tableHeader}>
+//             <Text style={[styles.tableCell, styles.headerCell, { flex: 3 }]}>Description</Text>
+//             <Text style={[styles.tableCell, styles.headerCell, { flex: 1 }]}>Qty</Text>
+//             <Text style={[styles.tableCell, styles.headerCell, { flex: 1.5 }]}>Price</Text>
+//             <Text style={[styles.tableCell, styles.headerCell, { flex: 1.5 }]}>Amount</Text>
+//           </View>
+
+//           {invoiceData.selectedItems && invoiceData.selectedItems.length > 0 ? (
+//             invoiceData.selectedItems.map((item, index) => (
+//               <View key={index} style={styles.tableRow}>
+//                 <Text style={[styles.tableCell, { flex: 3 }]}>{item.itemName}</Text>
+//                 <Text style={[styles.tableCell, { flex: 1 }]}>{item.quantity || 1}</Text>
+//                 <Text style={[styles.tableCell, { flex: 1.5 }]}>{formatCurrency(item.itemPrice)}</Text>
+//                 <Text style={[styles.tableCell, { flex: 1.5 }]}>
+//                   {formatCurrency((item.quantity || 1) * item.itemPrice)}
+//                 </Text>
+//               </View>
+//             ))
+//           ) : (
+//             <View style={styles.tableRow}>
+//               <Text style={[styles.tableCell, { flex: 3 }]}>{invoiceData.title || 'Service'}</Text>
+//               <Text style={[styles.tableCell, { flex: 1 }]}>{invoiceData.quantity || 1}</Text>
+//               <Text style={[styles.tableCell, { flex: 1.5 }]}>{formatCurrency(invoiceData.price || 0)}</Text>
+//               <Text style={[styles.tableCell, { flex: 1.5 }]}>
+//                 {formatCurrency((invoiceData.quantity || 1) * (invoiceData.price || 0))}
+//               </Text>
+//             </View>
+//           )}
+//         </View>
+
+//         {/* Summary Section */}
+//         <View style={styles.summarySection}>
+//           <View style={styles.summaryRow}>
+//             <Text>Subtotal:</Text>
+//             <Text>{formatCurrency(invoiceData.subtotal || 0)}</Text>
+//           </View>
+          
+//           {invoiceData.discountValue && (
+//             <View style={styles.summaryRow}>
+//               <Text>
+//                 Discount {invoiceData.discountType === 'percent' ? `(${invoiceData.discountValue}%)` : ''}:
+//               </Text>
+//               <Text>-{formatCurrency(invoiceData.discountAmount || 0)}</Text>
+//             </View>
+//           )}
+          
+//           {invoiceData.shipping && (
+//             <View style={styles.summaryRow}>
+//               <Text>Shipping:</Text>
+//               <Text>{formatCurrency(invoiceData.shippingAmount || 0)}</Text>
+//             </View>
+//           )}
+          
+//           <View style={[styles.summaryRow, styles.totalRow]}>
+//             <Text style={styles.totalLabel}>TOTAL:</Text>
+//             <Text style={styles.totalAmount}>{formatCurrency(invoiceData.total || 0)}</Text>
+//           </View>
+//         </View>
+
+//         {/* Terms & Conditions */}
+//         {invoiceData.selectedTerms && (
+//           <View style={styles.termsSection}>
+//             <Text style={styles.sectionTitle}>Terms & Conditions:</Text>
+//             <Text style={styles.termsText}>{invoiceData.selectedTerms}</Text>
+//           </View>
+//         )}
+
+//         {/* Signature */}
+//         {invoiceData.signatureUri && (
+//           <View style={styles.signatureSection}>
+//             <Text style={styles.sectionTitle}>Signature:</Text>
+//             <Image 
+//               source={{ uri: invoiceData.signatureUri }} 
+//               style={styles.signatureImage}
+//               resizeMode="contain"
+//             />
+//           </View>
+//         )}
+
+//         {/* Footer */}
+//         <View style={styles.footer}>
+//           <Text style={styles.footerText}>Thank you for your business!</Text>
+//           <Text style={styles.footerText}>{invoiceData.companyData.companyName}</Text>
+//         </View>
+//       </ScrollView>
+
+//       {/* Action Button */}
+//       <TouchableOpacity style={styles.printButton} onPress={handlePrint}>
+//         <Ionicons name="print-outline" size={24} color="white" />
+//         <Text style={styles.printButtonText}>Print/Share Invoice</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//   },
+//   scrollContent: {
+//     padding: 20,
+//     paddingBottom: 80,
+//   },
+//   header: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 30,
+//     paddingBottom: 15,
+//     borderBottomWidth: 1,
+//     borderBottomColor: '#ddd',
+//   },
+//   invoiceTitle: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     color: '#333',
+//   },
+//   invoiceNumber: {
+//     fontSize: 18,
+//     color: '#666',
+//   },
+//   infoSection: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginBottom: 30,
+//   },
+//   infoColumn: {
+//     width: '45%',
+//   },
+//   sectionTitle: {
+//     fontWeight: 'bold',
+//     marginBottom: 10,
+//     color: '#333',
+//   },
+//   companyName: {
+//     fontWeight: 'bold',
+//     marginBottom: 5,
+//   },
+//   clientName: {
+//     fontWeight: 'bold',
+//     marginBottom: 5,
+//   },
+//   detailsSection: {
+//     marginBottom: 30,
+//   },
+//   detailRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginBottom: 5,
+//   },
+//   detailLabel: {
+//     fontWeight: 'bold',
+//     color: '#555',
+//   },
+//   itemsTable: {
+//     marginBottom: 30,
+//     borderWidth: 1,
+//     borderColor: '#ddd',
+//     borderRadius: 5,
+//     overflow: 'hidden',
+//   },
+//   tableHeader: {
+//     flexDirection: 'row',
+//     backgroundColor: '#f5f5f5',
+//     padding: 10,
+//   },
+//   tableRow: {
+//     flexDirection: 'row',
+//     padding: 10,
+//     borderTopWidth: 1,
+//     borderTopColor: '#eee',
+//   },
+//   tableCell: {
+//     paddingHorizontal: 5,
+//   },
+//   headerCell: {
+//     fontWeight: 'bold',
+//     color: '#333',
+//   },
+//   summarySection: {
+//     marginTop: 20,
+//   },
+//   summaryRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginBottom: 8,
+//   },
+//   totalRow: {
+//     borderTopWidth: 2,
+//     borderTopColor: '#333',
+//     paddingTop: 10,
+//     marginTop: 10,
+//   },
+//   totalLabel: {
+//     fontWeight: 'bold',
+//     fontSize: 16,
+//   },
+//   totalAmount: {
+//     fontWeight: 'bold',
+//     fontSize: 16,
+//   },
+//   termsSection: {
+//     marginTop: 40,
+//     paddingTop: 20,
+//     borderTopWidth: 1,
+//     borderTopColor: '#ddd',
+//   },
+//   termsText: {
+//     lineHeight: 20,
+//   },
+//   signatureSection: {
+//     marginTop: 40,
+//     alignItems: 'flex-end',
+//   },
+//   signatureImage: {
+//     width: 200,
+//     height: 80,
+//     borderWidth: 1,
+//     borderColor: '#ddd',
+//   },
+//   footer: {
+//     marginTop: 60,
+//     alignItems: 'center',
+//   },
+//   footerText: {
+//     color: '#666',
+//     marginBottom: 5,
+//   },
+//   printButton: {
+//     position: 'absolute',
+//     bottom: 20,
+//     left: 20,
+//     right: 20,
+//     backgroundColor: '#4CD04D',
+//     flexDirection: 'row',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     padding: 15,
+//     borderRadius: 8,
+//     elevation: 3,
+//   },
+//   printButtonText: {
+//     color: 'white',
+//     fontWeight: 'bold',
+//     marginLeft: 10,
+//     fontSize: 16,
+//   },
+// });
 import React from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
   ScrollView, 
-  Image, 
   TouchableOpacity,
-  Linking,
-  Alert
+  Alert,
+  ImageBackground
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
 
 export default function Template1Screen() {
   const route = useRoute();
@@ -623,84 +1144,59 @@ export default function Template1Screen() {
         <title>Invoice #${invoiceData.invoiceId}</title>
         <style>
           body { font-family: Arial, sans-serif; margin: 40px; }
-          .header { display: flex; justify-content: space-between; margin-bottom: 30px; }
-          .invoice-title { font-size: 24px; font-weight: bold; color: #333; }
-          .invoice-number { font-size: 18px; color: #666; }
-          .info-section { display: flex; justify-content: space-between; margin-bottom: 30px; }
-          .info-column { width: 45%; }
-          .section-title { font-weight: bold; margin-bottom: 10px; color: #333; }
-          .details-section { margin-bottom: 30px; }
-          .detail-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-          .detail-label { font-weight: bold; color: #555; }
-          .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-          .items-table th { background-color: #f5f5f5; padding: 10px; text-align: left; border-bottom: 2px solid #ddd; }
-          .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
-          .summary-section { margin-top: 20px; }
-          .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
-          .total-row { border-top: 2px solid #333; padding-top: 10px; font-weight: bold; }
-          .terms-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; }
-          .signature-section { margin-top: 60px; text-align: right; }
-          .signature-image { max-width: 200px; max-height: 80px; border: 1px solid #ddd; }
-          .footer { margin-top: 60px; text-align: center; color: #666; font-size: 12px; }
+          .company-name { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+          .invoice-title { font-size: 20px; font-weight: bold; margin: 20px 0; text-align: center; }
+          .section-title { font-weight: bold; margin-bottom: 5px; }
+          .info-section { margin-bottom: 20px; }
+          .invoice-details { display: flex; justify-content: space-between; margin-bottom: 20px; }
+          .divider { border-top: 1px solid #000; margin: 15px 0; }
+          .items-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          .items-table th, .items-table td { padding: 8px; text-align: left; }
+          .items-table th { border-bottom: 1px solid #ddd; }
+          .summary-table { width: 100%; border-collapse: collapse; }
+          .summary-table td { padding: 5px; }
+          .summary-total { border-top: 1px solid #000; font-weight: bold; }
+          .terms-section { margin-top: 30px; }
+          .footer { margin-top: 50px; display: flex; justify-content: space-between; }
+          .footer-section { width: 48%; }
+          .signature-line { border-top: 1px solid #000; margin-top: 60px; padding-top: 5px; }
         </style>
       </head>
       <body>
-        <div class="header">
-          <div class="invoice-title">INVOICE</div>
-          <div class="invoice-number">#${invoiceData.invoiceId}</div>
-        </div>
-
+        <div class="company-name">Androtech</div>
+        
+        <div class="invoice-title">INVOICE</div>
+        
         <div class="info-section">
-          <div class="info-column">
-            <div class="section-title">From:</div>
-            <div style="font-weight: bold;">${invoiceData.companyData.companyName}</div>
-            <div>${invoiceData.companyData.address || ''}</div>
-            <div>${invoiceData.companyData.email || ''}</div>
-            <div>${invoiceData.companyData.phone || ''}</div>
-            ${invoiceData.companyData.taxNo ? `<div>Tax No: ${invoiceData.companyData.taxNo}</div>` : ''}
-          </div>
-
-          <div class="info-column">
-            <div class="section-title">To:</div>
-            <div style="font-weight: bold;">
-              ${invoiceData.selectedClient?.tradeName || invoiceData.selectedClient?.clientName || ''}
-            </div>
-            <div>${invoiceData.selectedClient?.address || ''}</div>
-            <div>${invoiceData.selectedClient?.email || ''}</div>
-            <div>${invoiceData.selectedClient?.phone || ''}</div>
-            ${invoiceData.selectedClient?.taxNo ? `<div>Tax No: ${invoiceData.selectedClient.taxNo}</div>` : ''}
+          <div class="section-title">To :</div>
+          <div>${invoiceData.selectedClient?.tradeName || invoiceData.selectedClient?.clientName || ''}</div>
+          <div>${invoiceData.selectedClient?.address || ''}</div>
+          <div>${invoiceData.selectedClient?.email || ''}</div>
+          <div>${invoiceData.selectedClient?.phone || ''}</div>
+          ${invoiceData.selectedClient?.taxNo ? `<div>Tax No: ${invoiceData.selectedClient.taxNo}</div>` : ''}
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="invoice-details">
+          <div>#${invoiceData.invoiceId}</div>
+          <div>
+            <div><strong>Invoice Date:</strong> ${new Date(invoiceData.startDate).toLocaleDateString()}</div>
+            <div><strong>Due Date:</strong> ${new Date(invoiceData.endDate).toLocaleDateString()}</div>
+            ${invoiceData.selectedPaymentMethod ? `<div><strong>Payment Method:</strong> ${invoiceData.selectedPaymentMethod}</div>` : ''}
           </div>
         </div>
-
-        <div class="details-section">
-          <div class="detail-row">
-            <span class="detail-label">Invoice Date:</span>
-            <span>${new Date(invoiceData.startDate).toLocaleDateString()}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Due Date:</span>
-            <span>${new Date(invoiceData.endDate).toLocaleDateString()}</span>
-          </div>
-          ${invoiceData.po ? `
-          <div class="detail-row">
-            <span class="detail-label">PO Number:</span>
-            <span>${invoiceData.po}</span>
-          </div>
-          ` : ''}
-          ${invoiceData.selectedPaymentMethod ? `
-          <div class="detail-row">
-            <span class="detail-label">Payment Method:</span>
-            <span>${invoiceData.selectedPaymentMethod}</span>
-          </div>
-          ` : ''}
-        </div>
-
+        
+        <div class="divider"></div>
+        
         <table class="items-table">
           <thead>
             <tr>
               <th>Description</th>
               <th>Qty</th>
               <th>Price</th>
+              <th>Discount</th>
+              <th>Tax</th>
               <th>Amount</th>
             </tr>
           </thead>
@@ -711,6 +1207,8 @@ export default function Template1Screen() {
                   <td>${item.itemName}</td>
                   <td>${item.quantity || 1}</td>
                   <td>${formatCurrency(item.itemPrice)}</td>
+                  <td>${item.discount || 0}%</td>
+                  <td>${item.tax || 0}%</td>
                   <td>${formatCurrency((item.quantity || 1) * item.itemPrice)}</td>
                 </tr>
               `).join('')
@@ -719,56 +1217,62 @@ export default function Template1Screen() {
                   <td>${invoiceData.title || 'Service'}</td>
                   <td>${invoiceData.quantity || 1}</td>
                   <td>${formatCurrency(invoiceData.price || 0)}</td>
+                  <td>${invoiceData.discountValue || 0}%</td>
+                  <td>${invoiceData.taxRate || 0}%</td>
                   <td>${formatCurrency((invoiceData.quantity || 1) * (invoiceData.price || 0))}</td>
                 </tr>
               `
             }
           </tbody>
         </table>
-
-        <div class="summary-section">
-          <div class="summary-row">
-            <span>Subtotal:</span>
-            <span>${formatCurrency(invoiceData.subtotal || 0)}</span>
-          </div>
-          
+        
+        <div class="divider"></div>
+        
+        <table class="summary-table">
+          <tr>
+            <td width="70%">Sub total</td>
+            <td width="30%">${formatCurrency(invoiceData.subtotal || 0)}</td>
+          </tr>
           ${invoiceData.discountValue ? `
-          <div class="summary-row">
-            <span>Discount ${invoiceData.discountType === 'percent' ? `(${invoiceData.discountValue}%)` : ''}:</span>
-            <span>-${formatCurrency(invoiceData.discountAmount || 0)}</span>
-          </div>
+          <tr>
+            <td>Discount (${invoiceData.discountValue}%)</td>
+            <td>-${formatCurrency(invoiceData.discountAmount || 0)}</td>
+          </tr>
           ` : ''}
-          
           ${invoiceData.shipping ? `
-          <div class="summary-row">
-            <span>Shipping:</span>
-            <span>${formatCurrency(invoiceData.shippingAmount || 0)}</span>
-          </div>
+          <tr>
+            <td>Shipping</td>
+            <td>${formatCurrency(invoiceData.shippingAmount || 0)}</td>
+          </tr>
           ` : ''}
-          
-          <div class="summary-row total-row">
-            <span>TOTAL:</span>
-            <span>${formatCurrency(invoiceData.total || 0)}</span>
-          </div>
-        </div>
-
+          ${invoiceData.taxRate ? `
+          <tr>
+            <td>Tax</td>
+            <td>${formatCurrency(invoiceData.taxAmount || 0)}</td>
+          </tr>
+          ` : ''}
+          <tr class="summary-total">
+            <td>Total</td>
+            <td>${formatCurrency(invoiceData.total || 0)}</td>
+          </tr>
+        </table>
+        
         ${invoiceData.selectedTerms ? `
         <div class="terms-section">
-          <div class="section-title">Terms & Conditions:</div>
+          <div class="section-title">Terms & Conditions :</div>
           <div>${invoiceData.selectedTerms}</div>
         </div>
         ` : ''}
-
-        ${invoiceData.signatureUri ? `
-        <div class="signature-section">
-          <div class="section-title">Signature:</div>
-          <img src="${invoiceData.signatureUri}" class="signature-image" />
-        </div>
-        ` : ''}
-
+        
+        <div class="signature-line">Approval Signature</div>
+        
         <div class="footer">
-          <div>Thank you for your business!</div>
-          <div>${invoiceData.companyData.companyName}</div>
+          <div class="footer-section">
+            <div>${invoiceData.companyData.address || ''}</div>
+            <div>Tax No: ${invoiceData.companyData.taxNo || ''}</div>
+            <div>${invoiceData.companyData.email || ''}</div>
+            <div>${invoiceData.companyData.phone || ''}</div>
+          </div>
         </div>
       </body>
       </html>
@@ -776,29 +1280,20 @@ export default function Template1Screen() {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.header}>
+    <ImageBackground 
+      source={require('../../../assets/A4 - 1bg.png')} 
+      style={styles.background}
+      resizeMode="stretch"
+    >
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Company Name */}
+          <Text style={styles.companyName}>Androtech</Text>
           <Text style={styles.invoiceTitle}>INVOICE</Text>
-          <Text style={styles.invoiceNumber}>#{invoiceData.invoiceId}</Text>
-        </View>
 
-        {/* Company and Client Info */}
-        <View style={styles.infoSection}>
-          <View style={styles.infoColumn}>
-            <Text style={styles.sectionTitle}>From:</Text>
-            <Text style={styles.companyName}>{invoiceData.companyData.companyName}</Text>
-            <Text>{invoiceData.companyData.address}</Text>
-            <Text>{invoiceData.companyData.email}</Text>
-            <Text>{invoiceData.companyData.phone}</Text>
-            {invoiceData.companyData.taxNo && (
-              <Text>Tax No: {invoiceData.companyData.taxNo}</Text>
-            )}
-          </View>
-
-          <View style={styles.infoColumn}>
-            <Text style={styles.sectionTitle}>To:</Text>
+          {/* Client Info */}
+          <View style={styles.clientSection}>
+            <Text style={styles.sectionTitle}>To :</Text>
             <Text style={styles.clientName}>
               {invoiceData.selectedClient?.tradeName || invoiceData.selectedClient?.clientName}
             </Text>
@@ -809,194 +1304,199 @@ export default function Template1Screen() {
               <Text>Tax No: {invoiceData.selectedClient.taxNo}</Text>
             )}
           </View>
-        </View>
 
-        {/* Invoice Details */}
-        <View style={styles.detailsSection}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Invoice Date:</Text>
-            <Text>{new Date(invoiceData.startDate).toLocaleDateString()}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Due Date:</Text>
-            <Text>{new Date(invoiceData.endDate).toLocaleDateString()}</Text>
-          </View>
-          {invoiceData.po && (
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>PO Number:</Text>
-              <Text>{invoiceData.po}</Text>
+          <View style={styles.divider} />
+
+          {/* Invoice Details */}
+          <View style={styles.invoiceDetails}>
+            <Text style={styles.invoiceNumber}>#{invoiceData.invoiceId}</Text>
+            <View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Invoice Date:</Text>
+                <Text>{new Date(invoiceData.startDate).toLocaleDateString()}</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Due Date:</Text>
+                <Text>{new Date(invoiceData.endDate).toLocaleDateString()}</Text>
+              </View>
+              {invoiceData.selectedPaymentMethod && (
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Payment Method:</Text>
+                  <Text>{invoiceData.selectedPaymentMethod}</Text>
+                </View>
+              )}
             </View>
-          )}
-          {invoiceData.selectedPaymentMethod && (
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Payment Method:</Text>
-              <Text>{invoiceData.selectedPaymentMethod}</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Items Table */}
-        <View style={styles.itemsTable}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableCell, styles.headerCell, { flex: 3 }]}>Description</Text>
-            <Text style={[styles.tableCell, styles.headerCell, { flex: 1 }]}>Qty</Text>
-            <Text style={[styles.tableCell, styles.headerCell, { flex: 1.5 }]}>Price</Text>
-            <Text style={[styles.tableCell, styles.headerCell, { flex: 1.5 }]}>Amount</Text>
           </View>
 
-          {invoiceData.selectedItems && invoiceData.selectedItems.length > 0 ? (
-            invoiceData.selectedItems.map((item, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={[styles.tableCell, { flex: 3 }]}>{item.itemName}</Text>
-                <Text style={[styles.tableCell, { flex: 1 }]}>{item.quantity || 1}</Text>
-                <Text style={[styles.tableCell, { flex: 1.5 }]}>{formatCurrency(item.itemPrice)}</Text>
-                <Text style={[styles.tableCell, { flex: 1.5 }]}>
-                  {formatCurrency((item.quantity || 1) * item.itemPrice)}
+          <View style={styles.divider} />
+
+          {/* Items Table */}
+          <View style={styles.itemsTable}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableCell, styles.headerCell, { flex: 2 }]}>Description</Text>
+              <Text style={[styles.tableCell, styles.headerCell, { flex: 1 }]}>Qty</Text>
+              <Text style={[styles.tableCell, styles.headerCell, { flex: 1 }]}>Price</Text>
+              <Text style={[styles.tableCell, styles.headerCell, { flex: 1 }]}>Discount</Text>
+              <Text style={[styles.tableCell, styles.headerCell, { flex: 1 }]}>Tax</Text>
+              <Text style={[styles.tableCell, styles.headerCell, { flex: 1 }]}>Amount</Text>
+            </View>
+
+            {invoiceData.selectedItems && invoiceData.selectedItems.length > 0 ? (
+              invoiceData.selectedItems.map((item, index) => (
+                <View key={index} style={styles.tableRow}>
+                  <Text style={[styles.tableCell, { flex: 2 }]}>{item.itemName}</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>{item.quantity || 1}</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>{formatCurrency(item.itemPrice)}</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>{item.discount || 0}%</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>{item.tax || 0}%</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>
+                    {formatCurrency((item.quantity || 1) * item.itemPrice)}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <View style={styles.tableRow}>
+                <Text style={[styles.tableCell, { flex: 2 }]}>{invoiceData.title || 'Service'}</Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>{invoiceData.quantity || 1}</Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>{formatCurrency(invoiceData.price || 0)}</Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>{invoiceData.discountValue || 0}%</Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>{invoiceData.taxRate || 0}%</Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>
+                  {formatCurrency((invoiceData.quantity || 1) * (invoiceData.price || 0))}
                 </Text>
               </View>
-            ))
-          ) : (
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{invoiceData.title || 'Service'}</Text>
-              <Text style={[styles.tableCell, { flex: 1 }]}>{invoiceData.quantity || 1}</Text>
-              <Text style={[styles.tableCell, { flex: 1.5 }]}>{formatCurrency(invoiceData.price || 0)}</Text>
-              <Text style={[styles.tableCell, { flex: 1.5 }]}>
-                {formatCurrency((invoiceData.quantity || 1) * (invoiceData.price || 0))}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Summary Section */}
-        <View style={styles.summarySection}>
-          <View style={styles.summaryRow}>
-            <Text>Subtotal:</Text>
-            <Text>{formatCurrency(invoiceData.subtotal || 0)}</Text>
+            )}
           </View>
-          
-          {invoiceData.discountValue && (
+
+          <View style={styles.divider} />
+
+          {/* Summary Section */}
+          <View style={styles.summarySection}>
             <View style={styles.summaryRow}>
-              <Text>
-                Discount {invoiceData.discountType === 'percent' ? `(${invoiceData.discountValue}%)` : ''}:
-              </Text>
-              <Text>-{formatCurrency(invoiceData.discountAmount || 0)}</Text>
+              <Text style={styles.summaryLabel}>Sub total</Text>
+              <Text style={styles.summaryValue}>{formatCurrency(invoiceData.subtotal || 0)}</Text>
+            </View>
+            
+            {invoiceData.discountValue && (
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryLabel}>Discount ({invoiceData.discountValue}%)</Text>
+                <Text style={styles.summaryValue}>-{formatCurrency(invoiceData.discountAmount || 0)}</Text>
+              </View>
+            )}
+            
+            {invoiceData.shipping && (
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryLabel}>Shipping</Text>
+                <Text style={styles.summaryValue}>{formatCurrency(invoiceData.shippingAmount || 0)}</Text>
+              </View>
+            )}
+            
+            {invoiceData.taxRate && (
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryLabel}>Tax</Text>
+                <Text style={styles.summaryValue}>{formatCurrency(invoiceData.taxAmount || 0)}</Text>
+              </View>
+            )}
+            
+            <View style={[styles.summaryRow, styles.totalRow]}>
+              <Text style={styles.totalLabel}>Total</Text>
+              <Text style={styles.totalAmount}>{formatCurrency(invoiceData.total || 0)}</Text>
+            </View>
+          </View>
+
+          {/* Terms & Conditions */}
+          {invoiceData.selectedTerms && (
+            <View style={styles.termsSection}>
+              <Text style={styles.sectionTitle}>Terms & Conditions :</Text>
+              <Text style={styles.termsText}>{invoiceData.selectedTerms}</Text>
             </View>
           )}
-          
-          {invoiceData.shipping && (
-            <View style={styles.summaryRow}>
-              <Text>Shipping:</Text>
-              <Text>{formatCurrency(invoiceData.shippingAmount || 0)}</Text>
-            </View>
-          )}
-          
-          <View style={[styles.summaryRow, styles.totalRow]}>
-            <Text style={styles.totalLabel}>TOTAL:</Text>
-            <Text style={styles.totalAmount}>{formatCurrency(invoiceData.total || 0)}</Text>
-          </View>
-        </View>
 
-        {/* Terms & Conditions */}
-        {invoiceData.selectedTerms && (
-          <View style={styles.termsSection}>
-            <Text style={styles.sectionTitle}>Terms & Conditions:</Text>
-            <Text style={styles.termsText}>{invoiceData.selectedTerms}</Text>
-          </View>
-        )}
-
-        {/* Signature */}
-        {invoiceData.signatureUri && (
+          {/* Signature Line */}
           <View style={styles.signatureSection}>
-            <Text style={styles.sectionTitle}>Signature:</Text>
-            <Image 
-              source={{ uri: invoiceData.signatureUri }} 
-              style={styles.signatureImage}
-              resizeMode="contain"
-            />
+            <Text style={styles.signatureLabel}>Approval Signature</Text>
           </View>
-        )}
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Thank you for your business!</Text>
-          <Text style={styles.footerText}>{invoiceData.companyData.companyName}</Text>
-        </View>
-      </ScrollView>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text>{invoiceData.companyData.address}</Text>
+            <Text>Tax No: {invoiceData.companyData.taxNo}</Text>
+            <Text>{invoiceData.companyData.email}</Text>
+            <Text>{invoiceData.companyData.phone}</Text>
+          </View>
+        </ScrollView>
 
-      {/* Action Button */}
-      <TouchableOpacity style={styles.printButton} onPress={handlePrint}>
-        <Ionicons name="print-outline" size={24} color="white" />
-        <Text style={styles.printButtonText}>Print/Share Invoice</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Action Button */}
+        <TouchableOpacity style={styles.printButton} onPress={handlePrint}>
+          <Ionicons name="print-outline" size={24} color="white" />
+          <Text style={styles.printButtonText}>Print/Share Invoice</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
   scrollContent: {
     padding: 20,
     paddingBottom: 80,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 30,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+  companyName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   invoiceTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  invoiceNumber: {
     fontSize: 18,
-    color: '#666',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 15,
   },
-  infoSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  infoColumn: {
-    width: '45%',
+  clientSection: {
+    marginBottom: 15,
   },
   sectionTitle: {
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  companyName: {
     fontWeight: 'bold',
     marginBottom: 5,
   },
   clientName: {
     fontWeight: 'bold',
-    marginBottom: 5,
   },
-  detailsSection: {
-    marginBottom: 30,
+  divider: {
+    borderTopWidth: 1,
+    borderTopColor: '#000',
+    marginVertical: 15,
+  },
+  invoiceDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  invoiceNumber: {
+    fontWeight: 'bold',
   },
   detailRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5,
+    marginBottom: 3,
   },
   detailLabel: {
     fontWeight: 'bold',
-    color: '#555',
+    marginRight: 5,
   },
   itemsTable: {
-    marginBottom: 30,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 5,
+    borderRadius: 4,
     overflow: 'hidden',
   },
   tableHeader: {
@@ -1011,60 +1511,60 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   tableCell: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 2,
   },
   headerCell: {
     fontWeight: 'bold',
-    color: '#333',
   },
   summarySection: {
-    marginTop: 20,
+    marginBottom: 20,
   },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,
   },
+  summaryLabel: {
+    flex: 1,
+  },
+  summaryValue: {
+    width: 100,
+    textAlign: 'right',
+  },
   totalRow: {
-    borderTopWidth: 2,
-    borderTopColor: '#333',
-    paddingTop: 10,
-    marginTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#000',
+    paddingTop: 8,
+    marginTop: 8,
   },
   totalLabel: {
     fontWeight: 'bold',
-    fontSize: 16,
+    flex: 1,
   },
   totalAmount: {
     fontWeight: 'bold',
-    fontSize: 16,
+    width: 100,
+    textAlign: 'right',
   },
   termsSection: {
-    marginTop: 40,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    marginTop: 20,
+    marginBottom: 30,
   },
   termsText: {
     lineHeight: 20,
   },
   signatureSection: {
     marginTop: 40,
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#000',
+    paddingTop: 5,
   },
-  signatureImage: {
-    width: 200,
-    height: 80,
-    borderWidth: 1,
-    borderColor: '#ddd',
+  signatureLabel: {
+    fontWeight: 'bold',
   },
   footer: {
-    marginTop: 60,
-    alignItems: 'center',
-  },
-  footerText: {
-    color: '#666',
-    marginBottom: 5,
+    marginTop: 30,
   },
   printButton: {
     position: 'absolute',
