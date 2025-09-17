@@ -1644,39 +1644,55 @@ export default function NewInvoiceScreen() {
   };
 
   // ✅ Handle Preview - Navigate to Template Selector
-  const handlePreview = () => {
-    if (!companyData) {
-      Alert.alert("Error", "Company information is required");
-      return;
-    }
+  // ✅ Handle Preview - Navigate to Template Selector
+const handlePreview = () => {
+  if (!companyData) {
+    Alert.alert("Error", "Company information is required");
+    return;
+  }
 
-    if (selectedItems.length === 0) {
-      Alert.alert("Error", "Please select at least one item");
-      return;
-    }
+  if (selectedItems.length === 0) {
+    Alert.alert("Error", "Please select at least one item");
+    return;
+  }
 
-    // Prepare invoice data for preview
-    const previewData = {
-      invoiceId: invoiceNumber,
-      startDate,
-      endDate,
-      po,
-      title,
-      discountType,
-      discountValue,
-      shipping,
-      companyData,
-      selectedClient,
-      selectedItems,
-      selectedPaymentMethod,
-      selectedTerms,
-      signatureUri: selectedSignature,
-      ...calculatedValues
-    };
-
-    // Navigate to template selector with the data
-    navigation.navigate("TemplateSelector", { invoiceData: previewData });
+  // Prepare invoice data for preview - ensure all properties are properly formatted
+  const previewData = {
+    invoiceId: invoiceNumber,
+    startDate: typeof startDate === 'string' ? startDate : startDate.toISOString(),
+    endDate: typeof endDate === 'string' ? endDate : endDate.toISOString(),
+    po: po || "",
+    title: title || "Invoice",
+    discountType: discountType,
+    discountValue: discountValue,
+    shipping: shipping,
+    subtotal: calculatedValues.subtotal,
+    discountAmount: calculatedValues.discountAmount,
+    shippingAmount: calculatedValues.shippingAmount,
+    total: calculatedValues.total,
+    companyData: companyData || {},
+    selectedClient: selectedClient || {},
+    selectedItems: selectedItems.map(item => ({
+      ...item,
+      quantity: item.quantity || 1,
+      itemPrice: item.itemPrice || 0,
+      discount: item.discount || 0,
+      discountType: item.discountType || "Fixed",
+      taxRate: item.taxRate || 0,
+      amount: item.amount || 0
+    })),
+    selectedPaymentMethod: selectedPaymentMethod || "",
+    selectedTerms: selectedTerms || "",
+    signatureUri: selectedSignature || null
   };
+
+  // Navigate to template selector with the data
+  navigation.navigate("TemplateSelector", { 
+    invoiceData: previewData,
+    // Also pass individual properties for backward compatibility
+    ...previewData
+  });
+};
 
   // ✅ Handle Create - Save to Database
   const handleCreate = async () => {
