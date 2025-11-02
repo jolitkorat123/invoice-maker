@@ -1847,7 +1847,7 @@ const handlePreview = () => {
 
     // ✅ Navigate to currency selection
   const navigateToCurrency= () => {
-    navigation.navigate("Terms-Condition-list");
+    navigation.navigate("Currency-screen");
   };
 
   // ✅ Navigate to terms selection
@@ -2403,7 +2403,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: 100,
     alignItems: "center",
-  },
+  }, 
   discountSelected: { backgroundColor: "#4CD04D33", borderColor: "#4CD04D" },
 
   // ✅ Bottom Action Buttons
@@ -2443,3 +2443,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+
+
+
